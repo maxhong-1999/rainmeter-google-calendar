@@ -10,7 +10,7 @@ Use a three-part version such as `1.0.0`:
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-release.ps1 -Version 1.0.0
 ```
 
-The command runs `pnpm test` first. On success, it writes a clean tree to `output/rmskin-stage`. That tree contains the runtime skin, `RMSKIN.ini`, and placeholder `Private.inc` and `ChromeProfile.inc` files generated only from the tracked examples.
+The command runs `pnpm test` first. On success, it writes a clean tree to `output/rmskin-stage` and creates `output/GoogleCalendar_<version>.rmskin`. The archive contains the runtime skin, its audited `RMSKIN.ini`, and placeholder `Private.inc` and `ChromeProfile.inc` files generated only from the tracked examples.
 
 Do not replace those generated files with the local files from a working installation.
 
@@ -32,9 +32,9 @@ output/rmskin-stage/
 
 Open the two `.inc` files. Their only calendar/account values must remain `PASTE_YOUR_SECRET_ICAL_URL_HERE` and `you@example.com`. `RMSKIN.ini` must contain both files in its `VariableFiles` value.
 
-## 3. Create the installer with Rainmeter
+## 3. Use the generated installer
 
-Open Rainmeter Manage and use the official **Skin Packager**. Select the prepared `output/rmskin-stage` tree and create a versioned installer, for example `GoogleCalendar_1.0.0.rmskin`. Do not add plugins, layouts, a real calendar cache, or local configuration files to the package.
+Use the generated `output/GoogleCalendar_1.0.0.rmskin` archive. Do not recreate it with Rainmeter Skin Packager: its UI can replace the audited `RMSKIN.ini` and remove the `VariableFiles` setting that preserves personal configuration during upgrades. Do not add plugins, layouts, a real calendar cache, or local configuration files to the package.
 
 Keep the resulting `.rmskin` inside `output/`, which is ignored by Git.
 

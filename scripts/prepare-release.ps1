@@ -18,6 +18,19 @@ try {
   if ($LASTEXITCODE -ne 0) {
     throw 'RMSKIN staging failed.'
   }
+
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $stageRoot = Join-Path $projectRoot 'output/rmskin-stage'
+  $archivePath = Join-Path $projectRoot "output/GoogleCalendar_$Version.rmskin"
+  if (Test-Path -LiteralPath $archivePath) {
+    Remove-Item -LiteralPath $archivePath -Force
+  }
+  [System.IO.Compression.ZipFile]::CreateFromDirectory(
+    $stageRoot,
+    $archivePath,
+    [System.IO.Compression.CompressionLevel]::Optimal,
+    $false
+  )
 } finally {
   Pop-Location
 }

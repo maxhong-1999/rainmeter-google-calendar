@@ -1,9 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 const projectRoot = new URL('../', import.meta.url);
+const execFileAsync = promisify(execFile);
 
 function readProjectFile(relativePath) {
   return readFile(new URL(relativePath, projectRoot), 'utf8');
@@ -98,9 +103,32 @@ test('GitHub Actions verifies the project on Windows for pushes and pull request
   assert.match(workflow, /^\s+push:\s*$/m);
   assert.match(workflow, /^\s+pull_request:\s*$/m);
   assert.match(workflow, /runs-on:\s*windows-latest/i);
-  assert.match(workflow, /actions\/checkout@/i);
-  assert.match(workflow, /actions\/setup-node@/i);
+  assert.match(workflow, /actions\/checkout@11d5960a326750d5838078e36cf38b85af677262/i);
+  assert.match(workflow, /pnpm\/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1/i);
+  assert.match(workflow, /actions\/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020/i);
   assert.match(workflow, /corepack enable/i);
   assert.match(workflow, /pnpm install --frozen-lockfile/i);
   assert.match(workflow, /pnpm test/i);
+});
+
+test('bundled installer preserves local configuration and loads the calendar skin', async () => {
+  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.0.0.rmskin', import.meta.url));
+  const extractionDir = await mkdtemp(join(tmpdir(), 'rainmeter-rmskin-'));
+  const escapedArchive = archive.replaceAll("'", "''");
+  const escapedDestination = extractionDir.replaceAll("'", "''");
+
+  try {
+    await execFileAsync('powershell', [
+      '-NoProfile',
+      '-Command',
+      `Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedArchive}', '${escapedDestination}')`,
+    ]);
+    const manifest = await readFile(join(extractionDir, 'RMSKIN.ini'), 'utf8');
+
+    assert.match(manifest, /^LoadType=Skin$/m);
+    assert.match(manifest, /^Load=GoogleCalendar\\GoogleCalendar\.ini$/m);
+    assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc$/m);
+  } finally {
+    await rm(extractionDir, { recursive: true, force: true });
+  }
 });
