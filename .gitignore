@@ -1,0 +1,8 @@
+node_modules/
+DownloadFile/*.ics
+@Resources/Private.inc
+@Resources/ChromeProfile.inc
+*.bak
+*.log
+output/
+.superpowers/

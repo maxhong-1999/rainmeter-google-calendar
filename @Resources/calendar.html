@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko" data-sync="idle">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>로컬 캘린더</title>
+    <link rel="stylesheet" href="./calendar.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "ical.js": "./vendor/ical.js"
+        }
+      }
+    </script>
+    <script type="module" src="./calendar.js"></script>
+  </head>
+  <body>
+    <main class="calendar-shell" aria-label="월간 일정">
+      <header class="calendar-header">
+        <button class="nav-button previous" id="previous-month" type="button" aria-label="이전 달"></button>
+        <button class="today-button" id="today-button" type="button">오늘</button>
+        <div class="month-heading">
+          <h1 id="month-label"></h1>
+          <p id="sync-state" role="status" aria-live="polite"></p>
+        </div>
+        <button class="settings-button" id="theme-settings-button" type="button"
+          aria-label="색상 설정" aria-expanded="false" aria-controls="theme-settings-panel">
+          <span class="settings-icon" aria-hidden="true"></span>
+        </button>
+        <button class="nav-button next" id="next-month" type="button" aria-label="다음 달"></button>
+      </header>
+      <section class="calendar-content" aria-labelledby="month-label">
+        <div class="weekday-row" aria-hidden="true">
+          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+        </div>
+        <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="월간 일정표"></div>
+      </section>
+      <section class="theme-settings-panel" id="theme-settings-panel" role="dialog" aria-label="색상 설정" hidden>
+        <label class="theme-field" for="theme-background"><span>배경색</span><input id="theme-background" type="color" value="#ffffff"></label>
+        <label class="theme-field" for="theme-foreground"><span>글자색</span><input id="theme-foreground" type="color" value="#ffffff"></label>
+        <label class="theme-opacity-field" for="theme-opacity">
+          <span>배경 투명도</span>
+          <output id="theme-opacity-value" for="theme-opacity">78%</output>
+          <input id="theme-opacity" type="range" min="0" max="100" step="1" value="78">
+        </label>
+        <button class="theme-reset" id="theme-reset" type="button">초기화</button>
+      </section>
+    </main>
+  </body>
+</html>

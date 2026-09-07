@@ -1,0 +1,4 @@
+[Variables]
+ChromePath=C:\Program Files\Google\Chrome\Application\chrome.exe
+ChromeProfileDirectory=Default
+GoogleAccount=you@example.com

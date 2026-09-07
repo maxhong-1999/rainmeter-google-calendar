@@ -1,0 +1,13 @@
+[
+  "GoogleCalendar.ini",
+  "@Resources/calendar-events.mjs",
+  "@Resources/calendar-feed-store.mjs",
+  "@Resources/calendar-host.mjs",
+  "@Resources/calendar-model.mjs",
+  "@Resources/calendar-theme-ui.mjs",
+  "@Resources/calendar-theme.mjs",
+  "@Resources/calendar.css",
+  "@Resources/calendar.html",
+  "@Resources/calendar.js",
+  "@Resources/vendor/ical.js"
+]
