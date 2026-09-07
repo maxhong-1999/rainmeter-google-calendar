@@ -15,12 +15,14 @@ Install both plugins before loading the skin. WebView2 is required for the calen
 
 ## Install from a release
 
-1. Download the latest `.rmskin` asset from this repository's **Releases** page.
+1. Download [GoogleCalendar_1.0.0.rmskin](releases/GoogleCalendar_1.0.0.rmskin?raw=1).
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
+
+SHA-256 (v1.0.0): `6E1DFB2F333E7C937F2DD353B8E26E823C8F2EAB516679E4644571DF6C4B944C`
 
 ## Install from source
 

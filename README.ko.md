@@ -15,8 +15,10 @@
 
 ## 릴리스 파일로 설치하기
 
-1. 이 저장소의 **Releases** 페이지에서 최신 `.rmskin` 파일을 다운로드합니다.
+1. [GoogleCalendar_1.0.0.rmskin](releases/GoogleCalendar_1.0.0.rmskin?raw=1)을 다운로드합니다.
 2. 다운로드한 파일을 더블클릭하고 Rainmeter 설치 창에서 **Install**을 선택합니다.
+
+v1.0.0 SHA-256: `6E1DFB2F333E7C937F2DD353B8E26E823C8F2EAB516679E4644571DF6C4B944C`
 3. `Documents\Rainmeter\Skins\GoogleCalendar\@Resources` 폴더를 엽니다.
 4. 아래 방법으로 `Private.inc`와 `ChromeProfile.inc`를 수정한 다음, Rainmeter에서 `GoogleCalendar`를 새로고침합니다.
 
