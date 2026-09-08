@@ -37,6 +37,13 @@ export function settingsSurfaceForForeground(hex) {
   return isLightForeground(hex) ? '3 18 36' : '248 251 255';
 }
 
+export function todayMarkerForForeground(hex) {
+  const foreground = normalizeHexColor(hex, DEFAULT_THEME.foreground);
+  return isLightForeground(foreground)
+    ? { surface: 'rgb(6 59 82 / .88)', border: 'rgb(224 250 255 / .96)', glow: 'rgb(116 225 255 / .46)' }
+    : { surface: 'rgb(182 246 255 / .88)', border: 'rgb(5 60 79 / .92)', glow: 'rgb(5 60 79 / .28)' };
+}
+
 export function loadTheme(storage) {
   try {
     const saved = storage?.getItem(THEME_STORAGE_KEY);
