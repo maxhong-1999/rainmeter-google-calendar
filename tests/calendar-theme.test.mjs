@@ -10,7 +10,6 @@ import {
   saveTheme,
   settingsSurfaceForForeground,
   shadowForForeground,
-  todayMarkerForForeground,
 } from '../@Resources/calendar-theme.mjs';
 
 test('defines the complete immutable default theme', () => {
@@ -53,15 +52,6 @@ test('chooses a contrasting shadow from foreground luminance', () => {
 test('chooses a fixed contrasting settings surface from foreground luminance', () => {
   assert.equal(settingsSurfaceForForeground('#FFFFFF'), '3 18 36');
   assert.equal(settingsSurfaceForForeground('#111111'), '248 251 255');
-});
-
-test('chooses a complete opposing today marker for light and dark foregrounds', () => {
-  assert.deepEqual(todayMarkerForForeground('#FFFFFF'), {
-    surface: 'rgb(6 59 82 / .88)', border: 'rgb(224 250 255 / .96)', glow: 'rgb(116 225 255 / .46)',
-  });
-  assert.deepEqual(todayMarkerForForeground('#111111'), {
-    surface: 'rgb(182 246 255 / .88)', border: 'rgb(5 60 79 / .92)', glow: 'rgb(5 60 79 / .28)',
-  });
 });
 
 test('loads legacy saved colors and migrates missing opacity to the default', () => {

@@ -7,7 +7,6 @@ import {
   saveTheme,
   settingsSurfaceForForeground,
   shadowForForeground,
-  todayMarkerForForeground,
 } from './calendar-theme.mjs';
 
 export function createThemeSettingsController({
@@ -34,10 +33,6 @@ export function createThemeSettingsController({
     root.style.setProperty('--theme-background-opacity', String(backgroundOpacity / 100));
     root.style.setProperty('--settings-surface-rgb', settingsSurfaceForForeground(normalizedTheme.foreground));
     root.style.setProperty('--theme-shadow', shadowForForeground(normalizedTheme.foreground));
-    const todayMarker = todayMarkerForForeground(normalizedTheme.foreground);
-    root.style.setProperty('--today-surface', todayMarker.surface);
-    root.style.setProperty('--today-border', todayMarker.border);
-    root.style.setProperty('--today-glow', todayMarker.glow);
     backgroundInput.value = normalizedTheme.background;
     foregroundInput.value = normalizedTheme.foreground;
     opacityInput.value = String(backgroundOpacity);

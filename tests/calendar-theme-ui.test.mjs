@@ -86,13 +86,7 @@ test('theme settings controller executes saved-theme, interaction, and reset beh
     '--theme-background-opacity': '0.78',
     '--settings-surface-rgb': '3 18 36',
     '--theme-shadow': 'rgba(3, 18, 36, 0.86)',
-    '--today-surface': 'rgb(6 59 82 / .88)',
-    '--today-border': 'rgb(224 250 255 / .96)',
-    '--today-glow': 'rgb(116 225 255 / .46)',
   });
-  assert.equal(root.style.properties.get('--today-surface'), 'rgb(6 59 82 / .88)');
-  assert.equal(root.style.properties.get('--today-border'), 'rgb(224 250 255 / .96)');
-  assert.equal(root.style.properties.get('--today-glow'), 'rgb(116 225 255 / .46)');
   assert.equal(backgroundInput.value, '#123456');
   assert.equal(foregroundInput.value, '#ABCDEF');
   assert.equal(opacityInput.value, '78');

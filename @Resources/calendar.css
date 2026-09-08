@@ -201,8 +201,8 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--today-surface);
-  box-shadow: inset 0 0 0 2px var(--today-border), 0 0 10px var(--today-glow);
+  background: rgb(var(--theme-background-rgb) / var(--theme-background-opacity));
+  box-shadow: inset 0 0 0 2px rgb(var(--theme-foreground-rgb) / .96), 0 0 10px rgb(var(--theme-foreground-rgb) / .30);
 }
 
 .event {
