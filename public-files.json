@@ -21,6 +21,7 @@
   "docs/RELEASING.md",
   "docs/plans/2026-09-07-github-rmskin-distribution-design.md",
   "docs/superpowers/plans/2026-09-07-github-rmskin-distribution.md",
+  "docs/superpowers/specs/2026-09-07-adaptive-today-highlight-design.md",
   "package.json",
   "pnpm-lock.yaml",
   "public-files.json",
