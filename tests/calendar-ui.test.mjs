@@ -104,6 +104,13 @@ test('the current-day number keeps the centered block-grid layout', async () => 
   assert.match(css, /\.day\.today \.day-number\s*\{[^}]*display:\s*grid;/s);
 });
 
+test('current day consumes adaptive marker properties', async () => {
+  const css = await readResource('calendar.css');
+  const todayRule = css.match(/\.day\.today \.day-number\s*\{[^}]*\}/s)?.[0] ?? '';
+  assert.match(todayRule, /background:\s*var\(--today-surface\);/);
+  assert.match(todayRule, /box-shadow:\s*inset\s+0\s+0\s+0\s+2px\s+var\(--today-border\),\s*0\s+0\s+10px\s+var\(--today-glow\);/);
+});
+
 test('event text is explicitly centered on both axes', async () => {
   const css = await readResource('calendar.css');
 
