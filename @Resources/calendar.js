@@ -135,8 +135,16 @@ async function loadFeedText(feed) {
 previousButton.addEventListener('click', () => updateMonth(-1));
 todayButton.addEventListener('click', goToToday);
 nextButton.addEventListener('click', () => updateMonth(1));
-themeBackgroundEyedropper.addEventListener('click', () => requestScreenColor('MeasureBackgroundScreenPicker'));
-themeForegroundEyedropper.addEventListener('click', () => requestScreenColor('MeasureForegroundScreenPicker'));
+themeBackgroundEyedropper.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  requestScreenColor('MeasureBackgroundScreenPicker');
+});
+themeForegroundEyedropper.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  requestScreenColor('MeasureForegroundScreenPicker');
+});
 document.addEventListener('dblclick', (event) => {
   if (themeSettingsPanel.contains(event.target)) return;
   if (!shouldOpenGoogleCalendar(event.target)) return;

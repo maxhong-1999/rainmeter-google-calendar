@@ -256,8 +256,8 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?opacityInput:\s*themeOpacity,[\s\S]*?opacityOutput:\s*themeOpacityValue,/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?backgroundHexInput:\s*themeBackgroundHex,[\s\S]*?foregroundHexInput:\s*themeForegroundHex,/);
   assert.match(js, /window\.applyPickedThemeColor = function applyPickedThemeColor\(target, color\)\s*\{[\s\S]*?themeSettings\.applyPickedColor\(target, color\);/);
-  assert.match(js, /themeBackgroundEyedropper\.addEventListener\('click', \(\) => requestScreenColor\('MeasureBackgroundScreenPicker'\)\);/);
-  assert.match(js, /themeForegroundEyedropper\.addEventListener\('click', \(\) => requestScreenColor\('MeasureForegroundScreenPicker'\)\);/);
+  assert.match(js, /themeBackgroundEyedropper\.addEventListener\('click', \(event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?event\.stopPropagation\(\);[\s\S]*?requestScreenColor\('MeasureBackgroundScreenPicker'\);[\s\S]*?\}\);/);
+  assert.match(js, /themeForegroundEyedropper\.addEventListener\('click', \(event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?event\.stopPropagation\(\);[\s\S]*?requestScreenColor\('MeasureForegroundScreenPicker'\);[\s\S]*?\}\);/);
   assert.match(js, /themeSettingsPanel\.contains\(event\.target\)/);
   assert.doesNotMatch(js, /function (?:applyTheme|setThemePanelOpen)\(/);
 });
