@@ -16,6 +16,8 @@ export function createThemeSettingsController({
   settingsPanel,
   backgroundInput,
   foregroundInput,
+  backgroundHexInput = null,
+  foregroundHexInput = null,
   opacityInput,
   opacityOutput,
   resetButton,
@@ -35,6 +37,8 @@ export function createThemeSettingsController({
     root.style.setProperty('--theme-shadow', shadowForForeground(normalizedTheme.foreground));
     backgroundInput.value = normalizedTheme.background;
     foregroundInput.value = normalizedTheme.foreground;
+    if (backgroundHexInput) backgroundHexInput.value = normalizedTheme.background;
+    if (foregroundHexInput) foregroundHexInput.value = normalizedTheme.foreground;
     opacityInput.value = String(backgroundOpacity);
     opacityOutput.textContent = `${backgroundOpacity}%`;
     if (persist) saveTheme(storage, normalizedTheme);
@@ -49,6 +53,8 @@ export function createThemeSettingsController({
   settingsButton.addEventListener('click', () => setOpen(settingsPanel.hidden));
   backgroundInput.addEventListener('input', () => applyTheme({ background: backgroundInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
   foregroundInput.addEventListener('input', () => applyTheme({ background: backgroundInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
+  backgroundHexInput?.addEventListener('change', () => applyTheme({ background: backgroundHexInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
+  foregroundHexInput?.addEventListener('change', () => applyTheme({ background: backgroundInput.value, foreground: foregroundHexInput.value, backgroundOpacity: opacityInput.value }));
   opacityInput.addEventListener('input', () => applyTheme({ background: backgroundInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
   resetButton.addEventListener('click', () => applyTheme(DEFAULT_THEME));
   documentTarget.addEventListener('click', (event) => {

@@ -25,6 +25,8 @@ const themeSettingsButton = document.querySelector('#theme-settings-button');
 const themeSettingsPanel = document.querySelector('#theme-settings-panel');
 const themeBackground = document.querySelector('#theme-background');
 const themeForeground = document.querySelector('#theme-foreground');
+const themeBackgroundHex = document.querySelector('#theme-background-hex');
+const themeForegroundHex = document.querySelector('#theme-foreground-hex');
 const themeOpacity = document.querySelector('#theme-opacity');
 const themeOpacityValue = document.querySelector('#theme-opacity-value');
 const themeReset = document.querySelector('#theme-reset');
@@ -48,6 +50,8 @@ createThemeSettingsController({
   settingsPanel: themeSettingsPanel,
   backgroundInput: themeBackground,
   foregroundInput: themeForeground,
+  backgroundHexInput: themeBackgroundHex,
+  foregroundHexInput: themeForegroundHex,
   opacityInput: themeOpacity,
   opacityOutput: themeOpacityValue,
   resetButton: themeReset,

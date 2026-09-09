@@ -214,6 +214,8 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(html, /id="theme-settings-panel"[^>]*role="dialog"[^>]*hidden/);
   assert.match(html, /id="theme-background"[^>]*type="color"/);
   assert.match(html, /id="theme-foreground"[^>]*type="color"/);
+  assert.match(html, /id="theme-background-hex"[^>]*type="text"[^>]*maxlength="7"/);
+  assert.match(html, /id="theme-foreground-hex"[^>]*type="text"[^>]*maxlength="7"/);
   assert.match(html, /id="theme-foreground"[\s\S]*?<label class="theme-opacity-field" for="theme-opacity">[\s\S]*?id="theme-opacity-value"[^>]*for="theme-opacity"[^>]*>78%<\/output>[\s\S]*?id="theme-opacity"[^>]*type="range"[^>]*min="0"[^>]*max="100"[^>]*step="1"[^>]*value="78"[\s\S]*?id="theme-reset"/);
   assert.match(html, /id="theme-reset"[^>]*>초기화<\/button>/);
 
@@ -243,9 +245,12 @@ test('theme settings retain the aligned, accessible color and opacity control co
 
   assert.match(js, /import \{ createThemeSettingsController \} from '\.\/calendar-theme-ui\.mjs';/);
   assert.match(js, /const themeOpacity = document\.querySelector\('#theme-opacity'\);/);
+  assert.match(js, /const themeBackgroundHex = document\.querySelector\('#theme-background-hex'\);/);
+  assert.match(js, /const themeForegroundHex = document\.querySelector\('#theme-foreground-hex'\);/);
   assert.match(js, /const themeOpacityValue = document\.querySelector\('#theme-opacity-value'\);/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?root:\s*document\.documentElement,[\s\S]*?storage:\s*themeStorage,[\s\S]*?documentTarget:\s*document,/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?opacityInput:\s*themeOpacity,[\s\S]*?opacityOutput:\s*themeOpacityValue,/);
+  assert.match(js, /createThemeSettingsController\(\{[\s\S]*?backgroundHexInput:\s*themeBackgroundHex,[\s\S]*?foregroundHexInput:\s*themeForegroundHex,/);
   assert.match(js, /themeSettingsPanel\.contains\(event\.target\)/);
   assert.doesNotMatch(js, /function (?:applyTheme|setThemePanelOpen)\(/);
 });

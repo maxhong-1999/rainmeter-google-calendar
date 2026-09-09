@@ -271,7 +271,13 @@ html[data-sync="error"] #sync-state { color: rgb(var(--theme-foreground-rgb) / .
 
 .theme-field + .theme-field { margin-top: 8px; }
 
-.theme-field input {
+.theme-color-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme-field input[type="color"] {
   width: 34px;
   height: 24px;
   padding: 0;
@@ -279,6 +285,21 @@ html[data-sync="error"] #sync-state { color: rgb(var(--theme-foreground-rgb) / .
   border-radius: 8px;
   background: transparent;
   cursor: pointer;
+}
+
+.theme-hex {
+  width: 76px;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid rgb(var(--theme-foreground-rgb) / .68);
+  border-radius: 8px;
+  background: rgb(var(--theme-background-rgb) / calc(var(--theme-background-opacity) * .38));
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
 }
 
 .theme-opacity-field {
