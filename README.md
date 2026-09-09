@@ -14,20 +14,20 @@ A 600 x 420 Rainmeter calendar skin that displays a private Google Calendar iCal
 
 Install both plugins before loading the skin. WebView2 is required for the calendar surface; RunCommand is required only for the double-click shortcut.
 
-To use the eyedropper inside the color popup, install `YourPicker_v1.6.0.rmskin` from its upstream releases, then refresh Rainmeter. The palette, RGB inputs, and HEX inputs continue to work without it; the plugin DLL is intentionally not bundled with this skin.
+If YourPicker is missing, clicking the eyedropper inside the color popup shows installation help. Choose **설치 페이지 열기** (Open installation page), install the plugin's `.rmskin` from the official releases, then choose **달력 새로고침** (Refresh calendar). Nothing is downloaded or installed automatically. Choose **RGB 편집으로 돌아가기** (Return to RGB editing) to keep using the palette and RGB/HEX inputs without the plugin. The plugin DLL is intentionally not bundled with this skin.
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.1.0.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.0/GoogleCalendar_1.1.0.rmskin).
+1. Download [GoogleCalendar_1.1.1.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.1/GoogleCalendar_1.1.1.rmskin).
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-SHA-256 (v1.1.0): `185E21F28431C0CE41A09AF7CCEADD60B8DAA141FB5B5F79099012D37774F28E`
+SHA-256 (v1.1.1): `6352CCE46CBC3D6C7C584E43FC15866A4F073EF74511F135444FF38F3165B766`
 
-v1.1.0 includes the updated today outline, HEX/RGB editing, and the screen eyedropper inside the color popup. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
+v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedropper and color-reading fix, plus missing-plugin guidance with an official installation-page link. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
 ## Install from source
 

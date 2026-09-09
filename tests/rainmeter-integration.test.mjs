@@ -101,6 +101,19 @@ test('Rainmeter sections own the complete dual-feed and local WebView contracts'
   });
 
   assert.equal([...sections.values()].filter(section => section.get('Plugin') === 'YourPicker').length, 1);
+  for (const [name, path] of [['MeasureYourPickerUserFiles', '#SETTINGSPATH#Plugins\\'], ['MeasureYourPickerProgramFiles', '#PROGRAMPATH#Plugins\\']]) {
+    const presence = sections.get(name);
+    assert.ok(presence, `Missing plugin presence check: ${name}`);
+    assert.equal(presence.get('Plugin'), 'FileView');
+    assert.equal(presence.get('Path'), path);
+    assert.equal(presence.get('Type'), 'FileCount');
+    assert.equal(presence.get('WildcardSearch'), 'YourPicker.dll');
+    assert.equal(presence.get('ShowFolder'), '0');
+    assert.equal(presence.get('ShowDotDot'), '0');
+    assert.equal(presence.get('Recursive'), '0');
+    assert.equal(presence.get('FinishAction'), '[!UpdateMeasure MeasureYourPickerAvailable]');
+  }
+  assert.equal(sections.get('MeasureYourPickerAvailable').get('Formula'), '(MeasureYourPickerUserFiles + MeasureYourPickerProgramFiles) > 0');
   assert.deepEqual(Object.fromEntries(screenPicker), {
     Measure: 'Plugin',
     Plugin: 'YourPicker',
@@ -148,7 +161,7 @@ test('authored public sources allow only approved runtime URLs without opening c
   const externalUrls = sources.match(/https?:\/\/[^\s'"\]]+/gi) || [];
   assert.deepEqual(
     [...new Set(externalUrls)].sort(),
-    [holidayUrl, googleCalendarUrl].sort(),
+    [holidayUrl, googleCalendarUrl, 'https://github.com/NSTechBytes/YourPicker/releases'].sort(),
   );
   assert.doesNotMatch(sources, /calendar\.google\.com\/calendar\/ical\/(?!ko\.south_korea%23holiday%40group\.v\.calendar\.google\.com\/public\/basic\.ics)/i);
   assert.doesNotMatch(sources, /CalendarURL\s*=\s*https?:\/\//i);
