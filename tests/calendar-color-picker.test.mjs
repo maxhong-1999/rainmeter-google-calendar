@@ -63,6 +63,31 @@ test('RGB edits apply a valid value without applying incomplete input', () => {
   assert.equal(changes.length, 1);
 });
 
+test('YourPicker bare HEX output fills RGB and applies the selected color', async () => {
+  const { picker, channels, changes } = setup({ RainmeterAPI: {
+    ReplaceVariables: () => '5CD6FF',
+    Bang() {},
+  } });
+  picker.open('background');
+  await picker.pickScreen();
+  assert.equal(await picker.receiveScreenColor(), true);
+  assert.deepEqual(channels.map(c => c.value), ['92', '214', '255']);
+  assert.deepEqual(changes, [['background', '#5CD6FF']]);
+});
+
+test('malformed native picker output does not change the theme', async () => {
+  for (const value of ['', '0', 'not-a-color', '12345678', '##123456']) {
+    const { picker, changes } = setup({ RainmeterAPI: {
+      ReplaceVariables: () => value,
+      Bang() {},
+    } });
+    picker.open('foreground');
+    await picker.pickScreen();
+    assert.equal(await picker.receiveScreenColor(), false, value);
+    assert.deepEqual(changes, [], value);
+  }
+});
+
 test('missing plugin is reported and leaves the selected color untouched', async () => {
   const { picker, status, changes } = setup({ RainmeterAPI: { Bang() { throw new Error('must not execute'); }, ReplaceVariables: async value => value } });
   picker.open('background');

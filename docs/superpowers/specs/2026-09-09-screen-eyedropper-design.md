@@ -12,6 +12,7 @@ Use the external MIT-licensed YourPicker Rainmeter plugin in its `-mp` magnifier
 
 - Background and foreground swatches open the same accessible popup; its internal eyedropper fills R/G/B and immediately applies the selected colour. Direct RGB input accepts integers from 0 to 255.
 - A selected `#RRGGBB` replaces only the requested field; opacity and the other colour are preserved.
+- YourPicker's `ColorToHex` returns bare `RRGGBB`. Normalize this to CSS `#RRGGBB` at the native bridge boundary, accepting only six hexadecimal digits with an optional leading `#`.
 - Escape/cancel leaves the saved theme unchanged.
 - If YourPicker is absent, ordinary colour controls and HEX fields keep working; the page reports that the screen picker needs the plugin.
 - The package documents YourPicker as an optional dependency and never bundles its DLL or user settings.

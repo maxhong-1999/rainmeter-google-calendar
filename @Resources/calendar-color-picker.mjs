@@ -109,7 +109,9 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
     try {
       // Read after the plugin updates its measure; embedding its value in
       // OnFinishAction would freeze it when YourPicker reads the INI.
-      const hex = String(await rainmeterApi(host).ReplaceVariables(PICK_VALUE)).trim();
+      const value = String(await rainmeterApi(host).ReplaceVariables(PICK_VALUE)).trim();
+      // YourPicker ColorToHex returns RRGGBB without CSS's leading '#'.
+      const hex = /^#?[\da-f]{6}$/i.test(value) ? `#${value.replace(/^#/, '')}` : null;
       if (requestGeneration !== generation || selectedTarget !== target) return false;
       samplingTarget = null;
       if (!commit(hex)) {
