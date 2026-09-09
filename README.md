@@ -18,14 +18,16 @@ To use the eyedropper inside the color popup, install `YourPicker_v1.6.0.rmskin`
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.0.0.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.0.0/GoogleCalendar_1.0.0.rmskin).
+1. Download [GoogleCalendar_1.1.0.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.0/GoogleCalendar_1.1.0.rmskin).
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-SHA-256 (v1.0.0): `7B6ADA2F838D16FEADFAABF44EB2F45ED5879D98D1C250FC040D639C5BD606FE`
+SHA-256 (v1.1.0): `185E21F28431C0CE41A09AF7CCEADD60B8DAA141FB5B5F79099012D37774F28E`
+
+v1.1.0 includes the updated today outline, HEX/RGB editing, and the screen eyedropper inside the color popup. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
 ## Install from source
 

@@ -18,14 +18,17 @@
 
 ## 릴리스 파일로 설치하기
 
-1. [GoogleCalendar_1.0.0.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.0.0/GoogleCalendar_1.0.0.rmskin)을 다운로드합니다.
+1. [GoogleCalendar_1.1.0.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.0/GoogleCalendar_1.1.0.rmskin)을 다운로드합니다.
 2. 다운로드한 파일을 더블클릭하고 Rainmeter 설치 창에서 **Install**을 선택합니다.
 
-v1.0.0 SHA-256: `7B6ADA2F838D16FEADFAABF44EB2F45ED5879D98D1C250FC040D639C5BD606FE`
 3. `Documents\Rainmeter\Skins\GoogleCalendar\@Resources` 폴더를 엽니다.
 4. 아래 방법으로 `Private.inc`와 `ChromeProfile.inc`를 수정한 다음, Rainmeter에서 `GoogleCalendar`를 새로고침합니다.
 
 설치 파일에는 예시 설정만 들어 있습니다. 다른 사람의 일정 주소, 이메일, Chrome 프로필은 포함되지 않습니다.
+
+v1.1.0 SHA-256: `185E21F28431C0CE41A09AF7CCEADD60B8DAA141FB5B5F79099012D37774F28E`
+
+v1.1.0에는 오늘 날짜 테두리, HEX·RGB 입력, 색상 선택창 내부 스포이드와 색상 읽기 오류 수정이 포함됩니다. 화면 추출에는 별도 YourPicker 설치가 필요하며 DLL은 포함하지 않습니다. 업데이트 시 기존 일정·계정 설정을 보존하도록 `VariableFiles`가 지정되어 있습니다.
 
 ## 소스 코드로 설치하기
 

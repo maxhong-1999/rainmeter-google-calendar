@@ -30,6 +30,7 @@
   "public-files.json",
   "rmskin-files.json",
   "releases/GoogleCalendar_1.0.0.rmskin",
+  "releases/GoogleCalendar_1.1.0.rmskin",
   "scripts/prepare-release.ps1",
   "scripts/prepare-rmskin.mjs",
   "tests/calendar-events.test.mjs",

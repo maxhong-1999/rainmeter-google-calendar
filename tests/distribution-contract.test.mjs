@@ -113,7 +113,7 @@ test('GitHub Actions verifies the project on Windows for pushes and pull request
 });
 
 test('bundled installer preserves local configuration and loads the calendar skin', async () => {
-  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.0.0.rmskin', import.meta.url));
+  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.1.0.rmskin', import.meta.url));
   const extractionDir = await mkdtemp(join(tmpdir(), 'rainmeter-rmskin-'));
   const escapedArchive = archive.replaceAll("'", "''");
   const escapedDestination = extractionDir.replaceAll("'", "''");
@@ -126,9 +126,21 @@ test('bundled installer preserves local configuration and loads the calendar ski
     ]);
     const manifest = await readFile(join(extractionDir, 'RMSKIN.ini'), 'utf8');
 
+    assert.match(manifest, /^Version=1\.1\.0$/m);
     assert.match(manifest, /^LoadType=Skin$/m);
     assert.match(manifest, /^Load=GoogleCalendar\\GoogleCalendar\.ini$/m);
     assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc$/m);
+    const runtimeFiles = JSON.parse(await readProjectFile('rmskin-files.json'));
+    for (const file of runtimeFiles) {
+      const packaged = await readFile(join(extractionDir, 'Skins', 'GoogleCalendar', file), 'utf8');
+      const source = await readProjectFile(file);
+      assert.equal(packaged.replaceAll('\r\n', '\n'), source.replaceAll('\r\n', '\n'), `Installer is stale: ${file}`);
+    }
+    for (const file of ['Private.inc', 'ChromeProfile.inc']) {
+      const packaged = await readFile(join(extractionDir, 'Skins', 'GoogleCalendar', '@Resources', file), 'utf8');
+      const example = await readProjectFile(`@Resources/${file}.example`);
+      assert.equal(packaged.replaceAll('\r\n', '\n'), example.replaceAll('\r\n', '\n'), `Installer includes non-example configuration: ${file}`);
+    }
   } finally {
     await rm(extractionDir, { recursive: true, force: true });
   }
