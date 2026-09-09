@@ -50,6 +50,17 @@ export function createThemeSettingsController({
     if (open) backgroundInput.focus();
   }
 
+  function applyPickedColor(target, value) {
+    if (target !== 'background' && target !== 'foreground') return;
+    const fallback = target === 'background' ? backgroundInput.value : foregroundInput.value;
+    const color = normalizeHexColor(value, fallback);
+    applyTheme({
+      background: target === 'background' ? color : backgroundInput.value,
+      foreground: target === 'foreground' ? color : foregroundInput.value,
+      backgroundOpacity: opacityInput.value,
+    });
+  }
+
   settingsButton.addEventListener('click', () => setOpen(settingsPanel.hidden));
   backgroundInput.addEventListener('input', () => applyTheme({ background: backgroundInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
   foregroundInput.addEventListener('input', () => applyTheme({ background: backgroundInput.value, foreground: foregroundInput.value, backgroundOpacity: opacityInput.value }));
@@ -70,5 +81,5 @@ export function createThemeSettingsController({
   });
 
   applyTheme(loadTheme(storage), false);
-  return { applyTheme, setOpen };
+  return { applyTheme, applyPickedColor, setOpen };
 }

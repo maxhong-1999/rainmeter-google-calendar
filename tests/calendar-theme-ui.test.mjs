@@ -176,3 +176,36 @@ test('committing a HEX color value updates the paired color control and saved th
   assert.equal(root.style.properties.get('--theme-background-rgb'), '10 11 12');
   assert.deepEqual(storage.writes.at(-1), [THEME_STORAGE_KEY, JSON.stringify({ background: '#0A0B0C', foreground: '#FFFFFF', backgroundOpacity: 78 })]);
 });
+
+test('a valid screen-picked color updates only its requested theme field', () => {
+  const root = new FakeElement();
+  const settingsButton = new FakeElement();
+  const settingsPanel = new FakeElement();
+  const backgroundInput = new FakeElement();
+  const foregroundInput = new FakeElement();
+  const opacityInput = new FakeElement();
+  const opacityOutput = new FakeElement();
+  const resetButton = new FakeElement();
+  const documentTarget = new FakeElement();
+  const storage = createStorage(JSON.stringify({ background: '#112233', foreground: '#445566', backgroundOpacity: 61 }));
+
+  const controller = createThemeSettingsController({
+    root,
+    storage,
+    settingsButton,
+    settingsPanel,
+    backgroundInput,
+    foregroundInput,
+    opacityInput,
+    opacityOutput,
+    resetButton,
+    documentTarget,
+  });
+
+  controller.applyPickedColor('background', '#0a0b0c');
+
+  assert.equal(backgroundInput.value, '#0A0B0C');
+  assert.equal(foregroundInput.value, '#445566');
+  assert.equal(opacityInput.value, '61');
+  assert.deepEqual(storage.writes.at(-1), [THEME_STORAGE_KEY, JSON.stringify({ background: '#0A0B0C', foreground: '#445566', backgroundOpacity: 61 })]);
+});

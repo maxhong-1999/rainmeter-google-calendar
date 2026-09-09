@@ -48,6 +48,8 @@ test('Rainmeter sections own the complete dual-feed and local WebView contracts'
   const personal = sections.get('MeasurePersonalCalendarFeed');
   const holidays = sections.get('MeasureHolidayCalendarFeed');
   const openGoogleCalendar = sections.get('MeasureOpenGoogleCalendar');
+  const backgroundScreenPicker = sections.get('MeasureBackgroundScreenPicker');
+  const foregroundScreenPicker = sections.get('MeasureForegroundScreenPicker');
   const webView = sections.get('WebView2');
   const bounds = sections.get('Bounds');
 
@@ -97,6 +99,21 @@ test('Rainmeter sections own the complete dual-feed and local WebView contracts'
     Parameter: '--profile-directory="#ChromeProfileDirectory#" --new-window "https://calendar.google.com/calendar/u/0/r?authuser=#GoogleAccount#"',
     State: 'Hide',
     DynamicVariables: '1',
+  });
+
+  assert.deepEqual(Object.fromEntries(backgroundScreenPicker), {
+    Measure: 'Plugin',
+    Plugin: 'YourPicker',
+    ReturnValue: 'Hex',
+    DarkMode: '1',
+    OnFinishAction: '[!CommandMeasure WebView2 "Execute window.applyPickedThemeColor && window.applyPickedThemeColor(\'background\', \'[MeasureBackgroundScreenPicker]\')"]',
+  });
+  assert.deepEqual(Object.fromEntries(foregroundScreenPicker), {
+    Measure: 'Plugin',
+    Plugin: 'YourPicker',
+    ReturnValue: 'Hex',
+    DarkMode: '1',
+    OnFinishAction: '[!CommandMeasure WebView2 "Execute window.applyPickedThemeColor && window.applyPickedThemeColor(\'foreground\', \'[MeasureForegroundScreenPicker]\')"]',
   });
 
   assert.deepEqual(Object.fromEntries(webView), {

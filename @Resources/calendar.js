@@ -27,6 +27,8 @@ const themeBackground = document.querySelector('#theme-background');
 const themeForeground = document.querySelector('#theme-foreground');
 const themeBackgroundHex = document.querySelector('#theme-background-hex');
 const themeForegroundHex = document.querySelector('#theme-foreground-hex');
+const themeBackgroundEyedropper = document.querySelector('#theme-background-eyedropper');
+const themeForegroundEyedropper = document.querySelector('#theme-foreground-eyedropper');
 const themeOpacity = document.querySelector('#theme-opacity');
 const themeOpacityValue = document.querySelector('#theme-opacity-value');
 const themeReset = document.querySelector('#theme-reset');
@@ -43,7 +45,7 @@ let followsToday = true;
 
 let eventsByDay = new Map();
 
-createThemeSettingsController({
+const themeSettings = createThemeSettingsController({
   root: document.documentElement,
   storage: themeStorage,
   settingsButton: themeSettingsButton,
@@ -57,6 +59,10 @@ createThemeSettingsController({
   resetButton: themeReset,
   documentTarget: document,
 });
+
+function requestScreenColor(measure) {
+  window.RainmeterAPI?.Bang?.(`[!CommandMeasure ${measure} "-mp"]`);
+}
 
 function dateKey(cell) {
   return `${cell.year}-${String(cell.monthIndex + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`;
@@ -129,6 +135,8 @@ async function loadFeedText(feed) {
 previousButton.addEventListener('click', () => updateMonth(-1));
 todayButton.addEventListener('click', goToToday);
 nextButton.addEventListener('click', () => updateMonth(1));
+themeBackgroundEyedropper.addEventListener('click', () => requestScreenColor('MeasureBackgroundScreenPicker'));
+themeForegroundEyedropper.addEventListener('click', () => requestScreenColor('MeasureForegroundScreenPicker'));
 document.addEventListener('dblclick', (event) => {
   if (themeSettingsPanel.contains(event.target)) return;
   if (!shouldOpenGoogleCalendar(event.target)) return;
@@ -138,6 +146,10 @@ document.addEventListener('dblclick', (event) => {
 window.markCalendarFeedError = function markCalendarFeedError(source) {
   feedStore.markFeedError(source);
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));
+};
+
+window.applyPickedThemeColor = function applyPickedThemeColor(target, color) {
+  themeSettings.applyPickedColor(target, color);
 };
 
 window.markCalendarFeedSuccess = function markCalendarFeedSuccess(source) {

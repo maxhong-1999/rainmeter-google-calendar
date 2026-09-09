@@ -10,8 +10,11 @@
 - 더블클릭으로 Google Calendar를 열 때 필요한 Google Chrome
 - 달력 화면을 표시하는 Rainmeter **WebView2** 플러그인
 - 지정한 Chrome 프로필을 여는 Rainmeter **RunCommand** 플러그인
+- 화면 색상 스포이드 버튼에만 필요한 선택 사항인 [YourPicker](https://github.com/NSTechBytes/YourPicker/releases) 플러그인
 
 스킨을 불러오기 전에 두 플러그인을 설치해 주세요. WebView2가 없으면 달력 화면이 표시되지 않고, RunCommand가 없으면 더블클릭 실행만 동작하지 않습니다.
+
+색상 설정의 작은 스포이드 버튼 두 개를 사용하려면 YourPicker 공식 릴리스의 `YourPicker_v1.6.0.rmskin`을 설치한 뒤 Rainmeter를 새로고침하세요. YourPicker DLL은 이 스킨에 포함하지 않으며, 설치하지 않아도 일반 색상 선택과 HEX 입력은 그대로 사용할 수 있습니다.
 
 ## 릴리스 파일로 설치하기
 
@@ -62,6 +65,7 @@ Chrome이 다른 위치에 설치된 경우에만 `ChromePath`를 바꾸면 됩�
 - 왼쪽·오른쪽 화살표로 이전 달과 다음 달을 이동합니다.
 - **오늘** 버튼을 누르면 현재 달로 돌아옵니다.
 - 톱니바퀴 버튼에서 배경색, 글자색, 유리 배경의 투명도를 함께 설정합니다. 설정값은 달력 화면에 로컬로 저장됩니다.
+- 각 색상 줄의 작은 스포이드 버튼을 누르면 화면 어디에서든 해당 색을 추출합니다. `Esc`를 누르면 변경 없이 취소됩니다.
 - 두 피드는 정각을 포함해 10분 단위로 새로고침됩니다. 새로고침에 실패해도 마지막으로 읽은 일정은 가능한 한 유지합니다.
 - 빈 달력 공간을 더블클릭하면 지정한 Chrome 프로필로 Google Calendar를 엽니다. 버튼과 일정 링크는 원래 클릭 동작을 유지합니다.
 
@@ -73,6 +77,7 @@ Chrome이 다른 위치에 설치된 경우에만 `ChromePath`를 바꾸면 됩�
 | 달력 화면이 보이지 않음 | Rainmeter WebView2 플러그인을 설치하거나 업데이트한 뒤 스킨을 새로고침합니다. |
 | 더블클릭해도 Chrome이 열리지 않음 | RunCommand 설치 여부와 `ChromePath`, `ChromeProfileDirectory`, `GoogleAccount`을 확인한 뒤 스킨을 새로고침합니다. |
 | 일정이 오래된 상태로 보임 | 다음 10분 새로고침을 기다리거나 Rainmeter에서 `GoogleCalendar`를 수동 새로고침합니다. |
+| 화면 색상 스포이드가 시작되지 않음 | 선택 사항인 YourPicker 플러그인을 설치하고 Rainmeter를 새로고침합니다. 일반 색상 선택과 HEX 입력에는 필요하지 않습니다. |
 | 비공개 주소를 실수로 커밋함 | Google Calendar에서 iCal 비밀 주소를 새로 만들고, 공개 전 모든 커밋에서 해당 값을 제거합니다. |
 
 플러그인 누락이나 INI 설정 오류는 Rainmeter 로그에서 가장 정확하게 확인할 수 있습니다.

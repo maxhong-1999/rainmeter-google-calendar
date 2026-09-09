@@ -114,6 +114,8 @@ test('README documents prerequisites, reproducible tests, failures, and launcher
   assert.match(readme, /corepack enable\s+pnpm install --frozen-lockfile\s+pnpm test/);
   assert.match(readme, /no default-browser fallback/i);
   assert.match(readme, /missing/i);
+  assert.match(readme, /YourPicker/i);
+  assert.match(readme, /screen color/i);
 });
 
 test('README and third-party notice state the MIT and ical.js legal boundaries', async () => {

@@ -10,8 +10,11 @@ A 600 x 420 Rainmeter calendar skin that displays a private Google Calendar iCal
 - Google Chrome, if you want the double-click shortcut.
 - The Rainmeter **WebView2** plugin, which renders the calendar surface.
 - The Rainmeter **RunCommand** plugin, which opens the configured Chrome profile.
+- The optional [YourPicker](https://github.com/NSTechBytes/YourPicker/releases) plugin for the screen-color eyedropper buttons.
 
 Install both plugins before loading the skin. WebView2 is required for the calendar surface; RunCommand is required only for the double-click shortcut.
+
+To use the two screen-color eyedropper buttons in the color settings, install `YourPicker_v1.6.0.rmskin` from its upstream releases, then refresh Rainmeter. The regular color controls and HEX inputs continue to work without it; the plugin DLL is intentionally not bundled with this skin.
 
 ## Install from a release
 
@@ -62,6 +65,7 @@ Set `ChromePath` only if Chrome is installed elsewhere. Double-click the calenda
 - Select the left or right arrow to move between months.
 - Select **Today** to return to the current month.
 - Select the gear icon to set the shared background color, foreground color, and glass opacity. Settings are stored locally in the calendar surface.
+- Select either small eyedropper button to pick that color from anywhere on the screen. Press `Esc` to cancel without changing the theme.
 - The skin refreshes both feeds every 10 minutes, including every hour on the hour. It keeps the last readable data if a refresh fails.
 - Double-click empty calendar space to open Google Calendar in the configured Chrome profile. Buttons and event links keep their normal click behavior.
 
@@ -73,6 +77,7 @@ Set `ChromePath` only if Chrome is installed elsewhere. Double-click the calenda
 | Calendar surface is not visible | Install or update the Rainmeter WebView2 plugin, then refresh the skin. |
 | Double-click does not open Chrome | Install RunCommand, verify `ChromePath`, `ChromeProfileDirectory`, and `GoogleAccount`, then refresh the skin. |
 | Events look old | Wait for the next ten-minute refresh or refresh `GoogleCalendar` manually in Rainmeter. |
+| Screen color picker does not start | Install the optional YourPicker plugin and refresh Rainmeter; normal color and HEX controls do not need it. |
 | A secret URL was committed | Regenerate the iCal secret in Google Calendar, remove it from every commit before publishing, and invalidate any shared copy. |
 
 Rainmeter's log is the best place to find missing-plugin or INI-configuration errors.
