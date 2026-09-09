@@ -6,11 +6,11 @@ Replace the unreliable native WebView2 colour-picker eyedropper with a Rainmeter
 
 ## Chosen approach
 
-Use the external MIT-licensed YourPicker Rainmeter plugin in its `-mp` magnifier mode. The settings panel will have one compact eyedropper button next to each colour field. The page asks the Rainmeter bridge to start the matching picker measure; after a successful choice, the measure sends its `#RRGGBB` result back to a narrow page callback. The existing theme controller normalizes, persists, and renders the new colour.
+Use the external MIT-licensed YourPicker Rainmeter plugin in its `-mp` magnifier mode. Each colour swatch opens one shared custom popup with a saturation/brightness palette, hue slider, internal eyedropper, preview, and editable R/G/B inputs. No separate eyedropper is shown on the settings rows. Use exactly one plugin measure because YourPicker shares static state across instances. On completion, a parameterless callback reads the freshly updated measure through `ReplaceVariables`; never interpolate the measure value into `OnFinishAction`, because YourPicker expands it during configuration loading.
 
 ## Behaviour
 
-- Background and foreground fields each have an accessible screen-colour picker button.
+- Background and foreground swatches open the same accessible popup; its internal eyedropper fills R/G/B and immediately applies the selected colour. Direct RGB input accepts integers from 0 to 255.
 - A selected `#RRGGBB` replaces only the requested field; opacity and the other colour are preserved.
 - Escape/cancel leaves the saved theme unchanged.
 - If YourPicker is absent, ordinary colour controls and HEX fields keep working; the page reports that the screen picker needs the plugin.
@@ -19,10 +19,10 @@ Use the external MIT-licensed YourPicker Rainmeter plugin in its `-mp` magnifier
 ## Boundaries
 
 - `calendar-theme-ui.mjs` owns accepting a picked HEX colour and persistence.
-- `calendar.js` owns the WebView-to-Rainmeter command and the small page callback.
-- `GoogleCalendar.ini` owns the two YourPicker measures and their callback actions.
+- `calendar-color-picker.mjs` owns popup state, RGB/HSV conversion, the native bridge, and stale-result protection; `calendar.js` connects its callback to the theme controller.
+- `GoogleCalendar.ini` owns the single YourPicker measure and its parameterless callback action.
 - Documentation owns installation and troubleshooting.
 
 ## Testing
 
-Unit coverage proves the controller changes only its requested colour and ignores invalid picker output. UI and Rainmeter integration contracts prove both buttons, bridge commands, callback, and `-mp` measures remain wired. The full Node suite verifies packaging/public-file boundaries.
+Unit coverage proves the controller changes only its requested colour, fills RGB from the post-selection measure value, and ignores invalid or stale picker output. UI and Rainmeter integration contracts prove the popup, internal button, bridge command, parameterless callback, and single measure remain wired. The full Node suite verifies packaging/public-file boundaries. Browser preview tests simulate the native bridge; they are not a substitute for actual native screen sampling.

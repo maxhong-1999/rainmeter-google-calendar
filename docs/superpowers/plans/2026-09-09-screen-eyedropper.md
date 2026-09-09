@@ -1,5 +1,7 @@
 # Screen Eyedropper Implementation Plan
 
+Historical plan: the original two-button/two-measure design below was superseded by the user's clarified request. See `../specs/2026-09-09-screen-eyedropper-design.md` for the implemented single-measure popup architecture, internal eyedropper, RGB inputs, and fresh-value callback. Do not recreate the two-measure or interpolated-value callback approach.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add reliable Rainmeter-native screen colour picking for both calendar theme colours.

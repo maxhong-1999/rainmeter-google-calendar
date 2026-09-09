@@ -36,14 +36,29 @@
         <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="월간 일정표"></div>
       </section>
       <section class="theme-settings-panel" id="theme-settings-panel" role="dialog" aria-label="색상 설정" hidden>
-        <label class="theme-field" for="theme-background"><span>배경색</span><span class="theme-color-controls"><input id="theme-background-hex" class="theme-hex" type="text" inputmode="text" maxlength="7" pattern="#[0-9A-Fa-f]{6}" spellcheck="false" aria-label="배경색 HEX 코드" value="#FFFFFF"><input id="theme-background" type="color" value="#ffffff"><button id="theme-background-eyedropper" class="theme-eyedropper" type="button" aria-label="배경색 화면에서 추출" title="화면에서 배경색 추출"></button></span></label>
-        <label class="theme-field" for="theme-foreground"><span>글자색</span><span class="theme-color-controls"><input id="theme-foreground-hex" class="theme-hex" type="text" inputmode="text" maxlength="7" pattern="#[0-9A-Fa-f]{6}" spellcheck="false" aria-label="글자색 HEX 코드" value="#FFFFFF"><input id="theme-foreground" type="color" value="#ffffff"><button id="theme-foreground-eyedropper" class="theme-eyedropper" type="button" aria-label="글자색 화면에서 추출" title="화면에서 글자색 추출"></button></span></label>
+        <div class="theme-field"><label for="theme-background-hex">배경색</label><span class="theme-color-controls"><input id="theme-background-hex" class="theme-hex" type="text" inputmode="text" maxlength="7" pattern="#[0-9A-Fa-f]{6}" spellcheck="false" aria-label="배경색 HEX 코드" value="#FFFFFF"><button id="theme-background" class="theme-swatch" type="button" value="#FFFFFF" aria-label="배경색 선택창 열기" aria-haspopup="dialog"></button></span></div>
+        <div class="theme-field"><label for="theme-foreground-hex">글자색</label><span class="theme-color-controls"><input id="theme-foreground-hex" class="theme-hex" type="text" inputmode="text" maxlength="7" pattern="#[0-9A-Fa-f]{6}" spellcheck="false" aria-label="글자색 HEX 코드" value="#FFFFFF"><button id="theme-foreground" class="theme-swatch" type="button" value="#FFFFFF" aria-label="글자색 선택창 열기" aria-haspopup="dialog"></button></span></div>
         <label class="theme-opacity-field" for="theme-opacity">
           <span>배경 투명도</span>
           <output id="theme-opacity-value" for="theme-opacity">78%</output>
           <input id="theme-opacity" type="range" min="0" max="100" step="1" value="78">
         </label>
         <button class="theme-reset" id="theme-reset" type="button">초기화</button>
+        <section id="color-picker" class="color-picker" role="dialog" aria-labelledby="picker-heading" hidden>
+          <div class="picker-header"><span id="picker-heading">배경색</span><button id="picker-close" type="button" aria-label="색상 선택창 닫기">×</button></div>
+          <div id="picker-palette" class="picker-palette" tabindex="0" role="group" aria-label="채도와 밝기 선택 · 방향키로 조절"><span id="picker-cursor" class="picker-cursor"></span></div>
+          <div class="picker-toolbar">
+            <button id="picker-eyedropper" type="button" aria-label="화면에서 색 추출" title="화면에서 색 추출"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5 5 5M16 3l5 5-3 3-1-1-9 9-4 1 1-4 9-9-1-1z"/></svg></button>
+            <span id="picker-preview" class="picker-preview" aria-hidden="true"></span>
+            <input id="picker-hue" class="picker-hue" type="range" min="0" max="360" step="1" value="0" aria-label="색조">
+          </div>
+          <div class="picker-rgb">
+            <label><input id="picker-r" type="number" min="0" max="255" step="1" aria-label="R 빨강">R</label>
+            <label><input id="picker-g" type="number" min="0" max="255" step="1" aria-label="G 초록">G</label>
+            <label><input id="picker-b" type="number" min="0" max="255" step="1" aria-label="B 파랑">B</label>
+          </div>
+          <p id="picker-status" class="picker-status" role="status" aria-live="polite"></p>
+        </section>
       </section>
     </main>
   </body>

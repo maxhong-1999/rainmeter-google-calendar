@@ -37,6 +37,8 @@ export function createThemeSettingsController({
     root.style.setProperty('--theme-shadow', shadowForForeground(normalizedTheme.foreground));
     backgroundInput.value = normalizedTheme.background;
     foregroundInput.value = normalizedTheme.foreground;
+    backgroundInput.style.setProperty('background-color', normalizedTheme.background);
+    foregroundInput.style.setProperty('background-color', normalizedTheme.foreground);
     if (backgroundHexInput) backgroundHexInput.value = normalizedTheme.background;
     if (foregroundHexInput) foregroundHexInput.value = normalizedTheme.foreground;
     opacityInput.value = String(backgroundOpacity);
@@ -52,6 +54,7 @@ export function createThemeSettingsController({
 
   function applyPickedColor(target, value) {
     if (target !== 'background' && target !== 'foreground') return;
+    if (typeof value !== 'string' || !/^#[\da-f]{6}$/i.test(value)) return;
     const fallback = target === 'background' ? backgroundInput.value : foregroundInput.value;
     const color = normalizeHexColor(value, fallback);
     applyTheme({

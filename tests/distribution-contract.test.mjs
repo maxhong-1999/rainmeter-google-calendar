@@ -68,6 +68,7 @@ test('release allowlist contains only runtime skin files', async () => {
     '@Resources/calendar-events.mjs',
     '@Resources/calendar-feed-store.mjs',
     '@Resources/calendar-host.mjs',
+    '@Resources/calendar-color-picker.mjs',
     '@Resources/calendar-model.mjs',
     '@Resources/calendar-theme-ui.mjs',
     '@Resources/calendar-theme.mjs',

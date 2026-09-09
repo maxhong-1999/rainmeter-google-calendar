@@ -212,12 +212,12 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(html, /id="previous-month"[\s\S]*?id="today-button"[\s\S]*?id="month-label"[\s\S]*?id="theme-settings-button"[\s\S]*?id="next-month"/);
   assert.match(html, /id="theme-settings-button"[^>]*aria-label="색상 설정"[^>]*aria-expanded="false"[^>]*aria-controls="theme-settings-panel"/);
   assert.match(html, /id="theme-settings-panel"[^>]*role="dialog"[^>]*hidden/);
-  assert.match(html, /id="theme-background"[^>]*type="color"/);
-  assert.match(html, /id="theme-foreground"[^>]*type="color"/);
+  assert.match(html, /id="theme-background"[^>]*type="button"/);
+  assert.match(html, /id="theme-foreground"[^>]*type="button"/);
   assert.match(html, /id="theme-background-hex"[^>]*type="text"[^>]*maxlength="7"/);
   assert.match(html, /id="theme-foreground-hex"[^>]*type="text"[^>]*maxlength="7"/);
-  assert.match(html, /id="theme-background-eyedropper"[^>]*type="button"[^>]*aria-label="배경색 화면에서 추출"/);
-  assert.match(html, /id="theme-foreground-eyedropper"[^>]*type="button"[^>]*aria-label="글자색 화면에서 추출"/);
+  assert.doesNotMatch(html, /theme-(?:background|foreground)-eyedropper/);
+  assert.match(html, /id="color-picker"[\s\S]*id="picker-eyedropper"[\s\S]*id="picker-r"[\s\S]*id="picker-g"[\s\S]*id="picker-b"/);
   assert.match(html, /id="theme-foreground"[\s\S]*?<label class="theme-opacity-field" for="theme-opacity">[\s\S]*?id="theme-opacity-value"[^>]*for="theme-opacity"[^>]*>78%<\/output>[\s\S]*?id="theme-opacity"[^>]*type="range"[^>]*min="0"[^>]*max="100"[^>]*step="1"[^>]*value="78"[\s\S]*?id="theme-reset"/);
   assert.match(html, /id="theme-reset"[^>]*>초기화<\/button>/);
 
@@ -249,15 +249,11 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(js, /const themeOpacity = document\.querySelector\('#theme-opacity'\);/);
   assert.match(js, /const themeBackgroundHex = document\.querySelector\('#theme-background-hex'\);/);
   assert.match(js, /const themeForegroundHex = document\.querySelector\('#theme-foreground-hex'\);/);
-  assert.match(js, /const themeBackgroundEyedropper = document\.querySelector\('#theme-background-eyedropper'\);/);
-  assert.match(js, /const themeForegroundEyedropper = document\.querySelector\('#theme-foreground-eyedropper'\);/);
   assert.match(js, /const themeOpacityValue = document\.querySelector\('#theme-opacity-value'\);/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?root:\s*document\.documentElement,[\s\S]*?storage:\s*themeStorage,[\s\S]*?documentTarget:\s*document,/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?opacityInput:\s*themeOpacity,[\s\S]*?opacityOutput:\s*themeOpacityValue,/);
   assert.match(js, /createThemeSettingsController\(\{[\s\S]*?backgroundHexInput:\s*themeBackgroundHex,[\s\S]*?foregroundHexInput:\s*themeForegroundHex,/);
-  assert.match(js, /window\.applyPickedThemeColor = function applyPickedThemeColor\(target, color\)\s*\{[\s\S]*?themeSettings\.applyPickedColor\(target, color\);/);
-  assert.match(js, /themeBackgroundEyedropper\.addEventListener\('click', \(event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?event\.stopPropagation\(\);[\s\S]*?requestScreenColor\('MeasureBackgroundScreenPicker'\);[\s\S]*?\}\);/);
-  assert.match(js, /themeForegroundEyedropper\.addEventListener\('click', \(event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?event\.stopPropagation\(\);[\s\S]*?requestScreenColor\('MeasureForegroundScreenPicker'\);[\s\S]*?\}\);/);
+  assert.match(js, /window\.receiveScreenColor = function receiveScreenColor\(\)/);
   assert.match(js, /themeSettingsPanel\.contains\(event\.target\)/);
   assert.doesNotMatch(js, /function (?:applyTheme|setThemePanelOpen)\(/);
 });

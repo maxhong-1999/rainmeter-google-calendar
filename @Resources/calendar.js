@@ -10,6 +10,7 @@ import {
 } from './calendar-model.mjs';
 import { openGoogleCalendar, shouldOpenGoogleCalendar } from './calendar-host.mjs';
 import { createThemeSettingsController } from './calendar-theme-ui.mjs';
+import { createColorPicker } from './calendar-color-picker.mjs';
 
 const CALENDAR_FEEDS = [
   { source: 'personal', path: '../DownloadFile/personal.ics' },
@@ -27,8 +28,6 @@ const themeBackground = document.querySelector('#theme-background');
 const themeForeground = document.querySelector('#theme-foreground');
 const themeBackgroundHex = document.querySelector('#theme-background-hex');
 const themeForegroundHex = document.querySelector('#theme-foreground-hex');
-const themeBackgroundEyedropper = document.querySelector('#theme-background-eyedropper');
-const themeForegroundEyedropper = document.querySelector('#theme-foreground-eyedropper');
 const themeOpacity = document.querySelector('#theme-opacity');
 const themeOpacityValue = document.querySelector('#theme-opacity-value');
 const themeReset = document.querySelector('#theme-reset');
@@ -60,9 +59,24 @@ const themeSettings = createThemeSettingsController({
   documentTarget: document,
 });
 
-function requestScreenColor(measure) {
-  window.RainmeterAPI?.Bang?.(`[!CommandMeasure ${measure} "-mp"]`);
-}
+const colorPicker = createColorPicker({
+  host: window,
+  panel: document.querySelector('#color-picker'),
+  palette: document.querySelector('#picker-palette'),
+  cursor: document.querySelector('#picker-cursor'),
+  hue: document.querySelector('#picker-hue'),
+  preview: document.querySelector('#picker-preview'),
+  channels: ['r', 'g', 'b'].map(channel => document.querySelector(`#picker-${channel}`)),
+  eyedropper: document.querySelector('#picker-eyedropper'),
+  closeButton: document.querySelector('#picker-close'),
+  status: document.querySelector('#picker-status'),
+  heading: document.querySelector('#picker-heading'),
+  swatches: { background: themeBackground, foreground: themeForeground },
+  onColor: (target, hex) => themeSettings.applyPickedColor(target, hex),
+});
+new MutationObserver(() => {
+  if (themeSettingsPanel.hidden) colorPicker.close();
+}).observe(themeSettingsPanel, { attributes: true, attributeFilter: ['hidden'] });
 
 function dateKey(cell) {
   return `${cell.year}-${String(cell.monthIndex + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`;
@@ -135,16 +149,6 @@ async function loadFeedText(feed) {
 previousButton.addEventListener('click', () => updateMonth(-1));
 todayButton.addEventListener('click', goToToday);
 nextButton.addEventListener('click', () => updateMonth(1));
-themeBackgroundEyedropper.addEventListener('click', (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  requestScreenColor('MeasureBackgroundScreenPicker');
-});
-themeForegroundEyedropper.addEventListener('click', (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  requestScreenColor('MeasureForegroundScreenPicker');
-});
 document.addEventListener('dblclick', (event) => {
   if (themeSettingsPanel.contains(event.target)) return;
   if (!shouldOpenGoogleCalendar(event.target)) return;
@@ -156,8 +160,8 @@ window.markCalendarFeedError = function markCalendarFeedError(source) {
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));
 };
 
-window.applyPickedThemeColor = function applyPickedThemeColor(target, color) {
-  themeSettings.applyPickedColor(target, color);
+window.receiveScreenColor = function receiveScreenColor() {
+  return colorPicker.receiveScreenColor();
 };
 
 window.markCalendarFeedSuccess = function markCalendarFeedSuccess(source) {

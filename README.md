@@ -14,7 +14,7 @@ A 600 x 420 Rainmeter calendar skin that displays a private Google Calendar iCal
 
 Install both plugins before loading the skin. WebView2 is required for the calendar surface; RunCommand is required only for the double-click shortcut.
 
-To use the two screen-color eyedropper buttons in the color settings, install `YourPicker_v1.6.0.rmskin` from its upstream releases, then refresh Rainmeter. The regular color controls and HEX inputs continue to work without it; the plugin DLL is intentionally not bundled with this skin.
+To use the eyedropper inside the color popup, install `YourPicker_v1.6.0.rmskin` from its upstream releases, then refresh Rainmeter. The palette, RGB inputs, and HEX inputs continue to work without it; the plugin DLL is intentionally not bundled with this skin.
 
 ## Install from a release
 
@@ -65,7 +65,7 @@ Set `ChromePath` only if Chrome is installed elsewhere. Double-click the calenda
 - Select the left or right arrow to move between months.
 - Select **Today** to return to the current month.
 - Select the gear icon to set the shared background color, foreground color, and glass opacity. Settings are stored locally in the calendar surface.
-- Select either small eyedropper button to pick that color from anywhere on the screen. Press `Esc` to cancel without changing the theme.
+- Select a color swatch to open the palette. Use the eyedropper inside this popup to pick a screen color: the R/G/B inputs fill automatically and the selected theme color updates immediately. You can also edit R/G/B (0–255) directly. Press `Esc` during screen picking to cancel without changing the theme.
 - The skin refreshes both feeds every 10 minutes, including every hour on the hour. It keeps the last readable data if a refresh fails.
 - Double-click empty calendar space to open Google Calendar in the configured Chrome profile. Buttons and event links keep their normal click behavior.
 

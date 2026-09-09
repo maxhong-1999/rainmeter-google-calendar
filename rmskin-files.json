@@ -3,6 +3,7 @@
   "@Resources/calendar-events.mjs",
   "@Resources/calendar-feed-store.mjs",
   "@Resources/calendar-host.mjs",
+  "@Resources/calendar-color-picker.mjs",
   "@Resources/calendar-model.mjs",
   "@Resources/calendar-theme-ui.mjs",
   "@Resources/calendar-theme.mjs",
