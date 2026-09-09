@@ -266,6 +266,8 @@ test('color picker includes bounded Korean YourPicker installation help wired th
   ]);
 
   assert.match(html, /id="picker-help"[^>]*hidden[\s\S]*YourPicker[\s\S]*설치 페이지 열기[\s\S]*달력 새로고침[\s\S]*RGB 편집으로 돌아가기/);
+  assert.match(html, /id="picker-help-status"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(css, /\.picker-help\[hidden\]\s*\{\s*display:\s*none;\s*\}/);
   assert.match(css, /\.picker-help\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*24px\s+0\s+0;[^}]*z-index:/s);
   assert.match(js, /helpPanel:\s*document\.querySelector\('#picker-help'\)/);
   assert.match(js, /installButton:\s*document\.querySelector\('#picker-install'\)/);

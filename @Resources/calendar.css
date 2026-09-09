@@ -355,6 +355,7 @@ html[data-sync="error"] #sync-state { color: rgb(var(--theme-foreground-rgb) / .
 }
 .picker-help strong { font-size: 14px; }
 .picker-help p { margin: 0 0 2px; line-height: 1.45; }
+.picker-help .picker-help-status { min-height: 14px; margin: -2px 0; color: #ffb2ac; font-size: 10px; }
 .picker-help button {
   min-height: 30px;
   border: 1px solid #8a8a8a;

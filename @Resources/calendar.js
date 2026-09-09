@@ -72,6 +72,7 @@ const colorPicker = createColorPicker({
   status: document.querySelector('#picker-status'),
   heading: document.querySelector('#picker-heading'),
   helpPanel: document.querySelector('#picker-help'),
+  helpStatus: document.querySelector('#picker-help-status'),
   installButton: document.querySelector('#picker-install'),
   refreshButton: document.querySelector('#picker-refresh'),
   dismissButton: document.querySelector('#picker-help-dismiss'),

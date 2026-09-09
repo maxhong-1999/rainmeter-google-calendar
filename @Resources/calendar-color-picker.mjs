@@ -37,7 +37,7 @@ function rainmeterApi(host) {
   return host.RainmeterAPI || host.chrome?.webview?.hostObjects?.sync?.RainmeterAPI;
 }
 
-export function createColorPicker({ host, panel, palette, cursor, hue, preview, channels, eyedropper, closeButton, status, heading, helpPanel, installButton, refreshButton, dismissButton, swatches, onColor }) {
+export function createColorPicker({ host, panel, palette, cursor, hue, preview, channels, eyedropper, closeButton, status, heading, helpPanel, helpStatus, installButton, refreshButton, dismissButton, swatches, onColor }) {
   let target = null;
   let samplingTarget = null;
   let generation = 0;
@@ -46,11 +46,13 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
 
   function hideHelp() {
     helpPanel.hidden = true;
+    helpStatus.textContent = '';
   }
 
   function showHelp() {
     samplingTarget = null;
     status.textContent = '';
+    helpStatus.textContent = '';
     helpPanel.hidden = false;
     installButton.focus();
   }
@@ -110,8 +112,17 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
       }
       samplingTarget = target;
       status.textContent = '화면에서 색을 클릭하세요 · Esc 취소';
-      await api.Bang(PICK_ACTION);
-      return true;
+      try {
+        await api.Bang(PICK_ACTION);
+        return true;
+      } catch {
+        if (requestGeneration === generation) {
+          samplingTarget = null;
+          hideHelp();
+          status.textContent = '화면 추출을 열 수 없습니다. 다시 시도하세요.';
+        }
+        return false;
+      }
     } catch {
       if (requestGeneration === generation) {
         showHelp();
@@ -124,10 +135,11 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
     try {
       const api = rainmeterApi(host);
       if (typeof api?.Bang !== 'function') throw new Error('bridge missing');
+      helpStatus.textContent = '';
       await api.Bang(action);
       return true;
     } catch {
-      status.textContent = 'Rainmeter 명령을 실행하지 못했습니다.';
+      helpStatus.textContent = 'Rainmeter 명령을 실행하지 못했습니다.';
       return false;
     }
   }

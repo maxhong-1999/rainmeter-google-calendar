@@ -13,7 +13,7 @@ class Element extends EventTarget {
 }
 function setup(api) {
   const changes = [];
-  const elements = Object.fromEntries(['panel', 'palette', 'cursor', 'hue', 'preview', 'eyedropper', 'closeButton', 'status', 'heading', 'helpPanel', 'installButton', 'refreshButton', 'dismissButton'].map(key => [key, new Element()]));
+  const elements = Object.fromEntries(['panel', 'palette', 'cursor', 'hue', 'preview', 'eyedropper', 'closeButton', 'status', 'heading', 'helpPanel', 'helpStatus', 'installButton', 'refreshButton', 'dismissButton'].map(key => [key, new Element()]));
   const channels = [new Element(), new Element(), new Element()];
   const swatches = { background: new Element(), foreground: new Element() };
   swatches.background.value = '#5CD6FF';
@@ -129,6 +129,19 @@ test('help actions send only the fixed release URL and skin refresh commands', a
   ]);
 });
 
+test('help action bridge failures are reported inside the visible help overlay', async () => {
+  const { picker, helpPanel, helpStatus, status } = setup({ RainmeterAPI: {
+    ReplaceVariables: () => '0',
+    Bang() { throw new Error('bridge failed'); },
+  } });
+  picker.open('background');
+  await picker.pickScreen();
+  assert.equal(helpPanel.hidden, false);
+  assert.equal(await picker.openInstallPage(), false);
+  assert.match(helpStatus.textContent, /Rainmeter/);
+  assert.equal(status.textContent, '');
+});
+
 test('closing, dismissing, or switching fields clears help and stale presence results', async () => {
   let resolvePresence;
   const { picker, helpPanel, dismissButton } = setup({ RainmeterAPI: {
@@ -159,6 +172,19 @@ test('bridge errors show guidance without changing the selected theme', async ()
   assert.equal(await picker.pickScreen(), false);
   assert.equal(helpPanel.hidden, false);
   assert.deepEqual(channels.map(channel => channel.value), before);
+  assert.deepEqual(changes, []);
+});
+
+test('verified plugin launch failures show a generic error without installation help', async () => {
+  const { picker, helpPanel, status, changes } = setup({ RainmeterAPI: {
+    ReplaceVariables: () => '1',
+    Bang() { throw new Error('launch failed'); },
+  } });
+  picker.open('background');
+  assert.equal(await picker.pickScreen(), false);
+  assert.equal(helpPanel.hidden, true);
+  assert.match(status.textContent, /열 수 없습니다/);
+  assert.doesNotMatch(status.textContent, /YourPicker|설치/);
   assert.deepEqual(changes, []);
 });
 
