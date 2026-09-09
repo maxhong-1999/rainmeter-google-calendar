@@ -58,6 +58,13 @@
             <label><input id="picker-b" type="number" min="0" max="255" step="1" aria-label="B 파랑">B</label>
           </div>
           <p id="picker-status" class="picker-status" role="status" aria-live="polite"></p>
+          <div id="picker-help" class="picker-help" role="alert" hidden>
+            <strong>YourPicker가 필요합니다</strong>
+            <p>화면 색 추출을 사용하려면 YourPicker를 설치한 뒤 달력을 새로고침하세요.</p>
+            <button id="picker-install" type="button">설치 페이지 열기</button>
+            <button id="picker-refresh" type="button">달력 새로고침</button>
+            <button id="picker-help-dismiss" class="picker-help-dismiss" type="button">RGB 편집으로 돌아가기</button>
+          </div>
         </section>
       </section>
     </main>

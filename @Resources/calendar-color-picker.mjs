@@ -1,5 +1,8 @@
 const PICK_ACTION = '[!CommandMeasure MeasureYourPicker "-mp"]';
 const PICK_VALUE = '[MeasureYourPicker]';
+const PICK_AVAILABLE = '[MeasureYourPickerAvailable]';
+const INSTALL_ACTION = '["https://github.com/NSTechBytes/YourPicker/releases"]';
+const REFRESH_ACTION = '[!Refresh]';
 
 export function rgbToHex(values) {
   if (values.length !== 3 || values.some(v => String(v).trim() === '' || !Number.isInteger(Number(v)) || Number(v) < 0 || Number(v) > 255)) return null;
@@ -34,12 +37,23 @@ function rainmeterApi(host) {
   return host.RainmeterAPI || host.chrome?.webview?.hostObjects?.sync?.RainmeterAPI;
 }
 
-export function createColorPicker({ host, panel, palette, cursor, hue, preview, channels, eyedropper, closeButton, status, heading, swatches, onColor }) {
+export function createColorPicker({ host, panel, palette, cursor, hue, preview, channels, eyedropper, closeButton, status, heading, helpPanel, installButton, refreshButton, dismissButton, swatches, onColor }) {
   let target = null;
   let samplingTarget = null;
   let generation = 0;
   let hsv = [0, 0, 1];
   let dragging = false;
+
+  function hideHelp() {
+    helpPanel.hidden = true;
+  }
+
+  function showHelp() {
+    samplingTarget = null;
+    status.textContent = '';
+    helpPanel.hidden = false;
+    installButton.focus();
+  }
 
   function display(hex, preserveHsv = false) {
     const rgb = hexToRgb(hex);
@@ -64,6 +78,7 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
     if (!Object.hasOwn(swatches, nextTarget)) return;
     generation += 1;
     samplingTarget = null;
+    hideHelp();
     target = nextTarget;
     display(swatches[target].value);
     heading.textContent = target === 'background' ? '배경색' : '글자색';
@@ -75,6 +90,7 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
   function close() {
     generation += 1;
     samplingTarget = null;
+    hideHelp();
     panel.hidden = true;
     swatches[target]?.focus();
     target = null;
@@ -86,20 +102,42 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
     try {
       const api = rainmeterApi(host);
       if (typeof api?.Bang !== 'function' || typeof api?.ReplaceVariables !== 'function') throw new Error('bridge missing');
-      const value = String(await api.ReplaceVariables(PICK_VALUE));
+      const available = String(await api.ReplaceVariables(PICK_AVAILABLE)).trim();
       if (requestGeneration !== generation) return false;
-      if (value.includes('MeasureYourPicker')) throw new Error('plugin missing');
+      if (available !== '1') {
+        showHelp();
+        return false;
+      }
       samplingTarget = target;
       status.textContent = '화면에서 색을 클릭하세요 · Esc 취소';
       await api.Bang(PICK_ACTION);
       return true;
     } catch {
       if (requestGeneration === generation) {
-        samplingTarget = null;
-        status.textContent = '화면 추출을 열 수 없습니다. YourPicker 설치를 확인하세요.';
+        showHelp();
       }
       return false;
     }
+  }
+
+  async function sendHelpAction(action) {
+    try {
+      const api = rainmeterApi(host);
+      if (typeof api?.Bang !== 'function') throw new Error('bridge missing');
+      await api.Bang(action);
+      return true;
+    } catch {
+      status.textContent = 'Rainmeter 명령을 실행하지 못했습니다.';
+      return false;
+    }
+  }
+
+  function openInstallPage() {
+    return sendHelpAction(INSTALL_ACTION);
+  }
+
+  function refreshCalendar() {
+    return sendHelpAction(REFRESH_ACTION);
   }
 
   async function receiveScreenColor() {
@@ -166,10 +204,13 @@ export function createColorPicker({ host, panel, palette, cursor, hue, preview, 
     commit(hsvToHex(...hsv), true);
   });
   eyedropper.addEventListener('click', () => { void pickScreen(); });
+  installButton.addEventListener('click', () => { void openInstallPage(); });
+  refreshButton.addEventListener('click', () => { void refreshCalendar(); });
+  dismissButton.addEventListener('click', () => { hideHelp(); eyedropper.focus(); });
   closeButton.addEventListener('click', close);
   panel.addEventListener('keydown', event => {
     if (event.key === 'Escape') { event.stopPropagation(); close(); }
   });
   for (const [name, swatch] of Object.entries(swatches)) swatch.addEventListener('click', () => open(name));
-  return { open, close, pickScreen, receiveScreenColor };
+  return { open, close, pickScreen, receiveScreenColor, openInstallPage, refreshCalendar };
 }

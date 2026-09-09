@@ -71,6 +71,10 @@ const colorPicker = createColorPicker({
   closeButton: document.querySelector('#picker-close'),
   status: document.querySelector('#picker-status'),
   heading: document.querySelector('#picker-heading'),
+  helpPanel: document.querySelector('#picker-help'),
+  installButton: document.querySelector('#picker-install'),
+  refreshButton: document.querySelector('#picker-refresh'),
+  dismissButton: document.querySelector('#picker-help-dismiss'),
   swatches: { background: themeBackground, foreground: themeForeground },
   onColor: (target, hex) => themeSettings.applyPickedColor(target, hex),
 });
