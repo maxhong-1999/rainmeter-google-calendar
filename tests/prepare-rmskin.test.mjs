@@ -56,7 +56,7 @@ test('stages runtime files and placeholder configuration without copying local v
   assert.doesNotMatch(`${privateConfig}\n${profileConfig}`, /private-user@example\.invalid|private\.example\.invalid/);
   assert.match(manifest, /^Version=1\.0\.0$/m);
   assert.match(manifest, /^Load=GoogleCalendar\\GoogleCalendar\.ini$/m);
-  assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc$/m);
+  assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc\|GoogleCalendar\\@Resources\\CalendarPeek\.ini$/m);
 });
 
 test('rejects an unsafe release allowlist before it copies files', async () => {

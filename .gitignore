@@ -2,6 +2,7 @@ node_modules/
 DownloadFile/*.ics
 @Resources/Private.inc
 @Resources/ChromeProfile.inc
+@Resources/CalendarPeek.state
 *.bak
 *.log
 output/

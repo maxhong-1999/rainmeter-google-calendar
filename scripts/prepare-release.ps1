@@ -31,6 +31,18 @@ try {
     [System.IO.Compression.CompressionLevel]::Optimal,
     $false
   )
+
+  # Rainmeter's PackageFooter: int64 ZIP size, byte flags, char key[7].
+  # A renamed ZIP without this footer is not a modern .rmskin installer.
+  $packageStream = [System.IO.File]::Open($archivePath, [System.IO.FileMode]::Append)
+  $packageWriter = New-Object System.IO.BinaryWriter($packageStream)
+  try {
+    $packageWriter.Write([long]$packageStream.Length)
+    $packageWriter.Write([byte]0)
+    $packageWriter.Write([System.Text.Encoding]::ASCII.GetBytes("RMSKIN`0"))
+  } finally {
+    $packageWriter.Dispose()
+  }
 } finally {
   Pop-Location
 }

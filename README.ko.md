@@ -9,16 +9,16 @@
 - Windows와 [Rainmeter](https://www.rainmeter.net/)
 - 더블클릭으로 Google Calendar를 열 때 필요한 Google Chrome
 - 달력 화면을 표시하는 Rainmeter **WebView2** 플러그인
-- 지정한 Chrome 프로필을 여는 Rainmeter **RunCommand** 플러그인
+- 모서리 호출과 지정한 Chrome 프로필 실행에 필요한 Rainmeter **RunCommand**(외부 명령 실행) 플러그인
 - 화면 색상 스포이드 버튼에만 필요한 선택 사항인 [YourPicker](https://github.com/NSTechBytes/YourPicker/releases) 플러그인
 
-스킨을 불러오기 전에 두 플러그인을 설치해 주세요. WebView2가 없으면 달력 화면이 표시되지 않고, RunCommand가 없으면 더블클릭 실행만 동작하지 않습니다.
+스킨을 불러오기 전에 두 플러그인을 설치해 주세요. WebView2가 없으면 달력 화면이 표시되지 않고, RunCommand(외부 명령 실행)가 없으면 모서리 호출과 더블클릭 실행이 동작하지 않습니다.
 
 색상 선택창 안의 스포이드를 눌렀을 때 YourPicker가 없으면 설치 안내가 표시됩니다. **설치 페이지 열기**로 공식 릴리스에 접속해 플러그인 `.rmskin`을 설치한 뒤, 안내창의 **달력 새로고침**을 누르세요. 자동으로 다운로드하거나 설치하지 않습니다. YourPicker DLL은 이 스킨에 포함하지 않으며, **RGB 편집으로 돌아가기**를 누르면 설치 없이도 팔레트와 RGB·HEX 입력을 사용할 수 있습니다.
 
 ## 릴리스 파일로 설치하기
 
-1. [GoogleCalendar_1.1.1.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.1/GoogleCalendar_1.1.1.rmskin)을 다운로드합니다.
+1. [GoogleCalendar_1.2.0.rmskin](releases/GoogleCalendar_1.2.0.rmskin)을 다운로드합니다. 저장소 파일 화면에서 다운로드 버튼을 누르면 됩니다.
 2. 다운로드한 파일을 더블클릭하고 Rainmeter 설치 창에서 **Install**을 선택합니다.
 
 3. `Documents\Rainmeter\Skins\GoogleCalendar\@Resources` 폴더를 엽니다.
@@ -26,7 +26,7 @@
 
 설치 파일에는 예시 설정만 들어 있습니다. 다른 사람의 일정 주소, 이메일, Chrome 프로필은 포함되지 않습니다.
 
-v1.1.1 SHA-256: `6352CCE46CBC3D6C7C584E43FC15866A4F073EF74511F135444FF38F3165B766`
+1.2.0 버전에는 화면 모서리로 달력을 호출하는 기능이 추가되었습니다. 아래 호출 설정에서 사용 방법을 확인하세요.
 
 v1.1.1에는 오늘 날짜 테두리, HEX·RGB 입력, 색상 선택창 내부 스포이드와 색상 읽기 오류 수정에 더해, YourPicker 미설치 안내와 공식 설치 페이지 연결이 포함됩니다. 화면 추출에는 별도 YourPicker 설치가 필요하며 DLL은 포함하지 않습니다. 업데이트 시 기존 일정·계정 설정을 보존하도록 `VariableFiles`가 지정되어 있습니다.
 
@@ -36,6 +36,28 @@ v1.1.1에는 오늘 날짜 테두리, HEX·RGB 입력, 색상 선택창 내부 �
 2. `@Resources\Private.inc.example`을 `@Resources\Private.inc`로 복사합니다.
 3. `@Resources\ChromeProfile.inc.example`을 `@Resources\ChromeProfile.inc`로 복사합니다.
 4. 두 로컬 파일을 설정한 뒤 Rainmeter에서 `GoogleCalendar`를 새로고침합니다.
+
+## 버튼 없이 화면 모서리로 달력 호출하기
+
+각 모니터의 **왼쪽 위 모서리에 커서를 0.4초 두면** 달력이 다른 창 위에 나타납니다. 커서를 달력 안으로 옮기면 그대로 사용할 수 있고, 달력과 모서리 밖으로 나가 **0.6초가 지나면** 원래 바탕화면 위치로 돌아갑니다. 호출 버튼이나 투명 감지 영역은 표시하지 않습니다.
+
+기본 대기 상태에서는 바탕화면의 달력을 유지합니다. 전체 화면 앱이 활성화되어 있거나 마우스로 드래그하는 동안에는 호출하지 않습니다. 달력이 열린 상태에서 **Esc(닫기 키)**를 누르면 닫힙니다. 이 키 입력은 다른 앱에도 전달됩니다.
+
+설정은 `@Resources/CalendarPeek.ini`(달력 호출 설정 파일)를 편집한 뒤 스킨을 새로고침하면 적용됩니다.
+
+| 설정 | 기본값과 의미 |
+|---|---|
+| `Enabled`(사용 여부) | `1` = 켜기, `0` = 끄기 |
+| `Corner`(호출 모서리) | `TopLeft`(왼쪽 위). `TopRight`(오른쪽 위), `BottomLeft`(왼쪽 아래), `BottomRight`(오른쪽 아래)도 가능 |
+| `TriggerSize`(감지 영역 크기) | `6` 실제 픽셀. 1~32 사이 |
+| `OpenDelayMs`(열기 대기 시간) | `400` 밀리초. 100~5000 사이 |
+| `CloseDelayMs`(닫기 대기 시간) | `600` 밀리초. 100~5000 사이 |
+| `IdleMode`(대기 상태) | `Desktop`(바탕화면 표시). `Hidden`(완전히 숨김)으로 변경 가능 |
+| `SuppressFullscreen`(전체 화면 차단) | `1` = 켜기, `0` = 끄기 |
+
+Windows PowerShell(윈도우 파워셸) 5.1과 기본 제공 .NET(닷넷)을 사용하므로 AutoHotkey(오토핫키) 설치는 필요하지 않습니다. RunCommand(외부 명령 실행) 플러그인이 스킨과 함께 제어기를 실행하고 새로고침·해제 시 종료합니다. 조직 정책으로 파워셸 실행이 차단되면 호출 기능은 실행되지 않으며 정책을 변경하지 않습니다. 이 경우 호출 설정을 끄고 기존 바탕화면 달력을 사용할 수 있습니다.
+
+다른 기기는 위 1.2.0 설치 파일을 설치하면 됩니다. 기존 일정·브라우저 설정과 호출 설정은 업데이트 시 보존됩니다. 설치기의 스킨 백업 옵션은 기본값대로 켜두세요. 새 기기의 일정 연결과 WebView2(웹 화면 표시) 플러그인은 해당 기기에서 준비해야 합니다.
 
 ## 내 일정 연결하기
 

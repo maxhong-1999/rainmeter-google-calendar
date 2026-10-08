@@ -105,7 +105,7 @@ function renderRmskinManifest(version) {
     'Load=GoogleCalendar\\GoogleCalendar.ini',
     'MinimumRainmeter=4.5.0',
     'MinimumWindows=10.0',
-    'VariableFiles=GoogleCalendar\\@Resources\\Private.inc|GoogleCalendar\\@Resources\\ChromeProfile.inc',
+    'VariableFiles=GoogleCalendar\\@Resources\\Private.inc|GoogleCalendar\\@Resources\\ChromeProfile.inc|GoogleCalendar\\@Resources\\CalendarPeek.ini',
     '',
   ].join('\n');
 }

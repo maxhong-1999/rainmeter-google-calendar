@@ -9,23 +9,23 @@ A 600 x 420 Rainmeter calendar skin that displays a private Google Calendar iCal
 - Windows and [Rainmeter](https://www.rainmeter.net/).
 - Google Chrome, if you want the double-click shortcut.
 - The Rainmeter **WebView2** plugin, which renders the calendar surface.
-- The Rainmeter **RunCommand** plugin, which opens the configured Chrome profile.
+- The Rainmeter **RunCommand** plugin, which runs the corner controller and opens the configured Chrome profile.
 - The optional [YourPicker](https://github.com/NSTechBytes/YourPicker/releases) plugin for the screen-color eyedropper buttons.
 
-Install both plugins before loading the skin. WebView2 is required for the calendar surface; RunCommand is required only for the double-click shortcut.
+Install both plugins before loading the skin. WebView2 is required for the calendar surface; RunCommand is required for corner invocation and the double-click shortcut.
 
 If YourPicker is missing, clicking the eyedropper inside the color popup shows installation help. Choose **설치 페이지 열기** (Open installation page), install the plugin's `.rmskin` from the official releases, then choose **달력 새로고침** (Refresh calendar). Nothing is downloaded or installed automatically. Choose **RGB 편집으로 돌아가기** (Return to RGB editing) to keep using the palette and RGB/HEX inputs without the plugin. The plugin DLL is intentionally not bundled with this skin.
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.1.1.rmskin](https://github.com/maxhong-1999/rainmeter-google-calendar/releases/download/v1.1.1/GoogleCalendar_1.1.1.rmskin).
+1. Download [GoogleCalendar_1.2.0.rmskin](releases/GoogleCalendar_1.2.0.rmskin) using the download button on the repository file page.
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-SHA-256 (v1.1.1): `6352CCE46CBC3D6C7C584E43FC15866A4F073EF74511F135444FF38F3165B766`
+Version 1.2.0 adds button-free hot-corner calendar access; see the settings below.
 
 v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedropper and color-reading fix, plus missing-plugin guidance with an official installation-page link. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
@@ -35,6 +35,28 @@ v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedroppe
 2. Copy `@Resources\Private.inc.example` to `@Resources\Private.inc`.
 3. Copy `@Resources\ChromeProfile.inc.example` to `@Resources\ChromeProfile.inc`.
 4. Configure both local files, then refresh `GoogleCalendar` in Rainmeter.
+
+## Button-free hot-corner access
+
+Hold the cursor in the top-left 6 physical pixels of any monitor for 400 ms to bring the calendar above normal application windows. Move into the calendar to interact with it. Leave both the calendar and corner for 600 ms to return it to its original desktop position. No launcher button or invisible input-blocking window is used. The calendar stays loaded and feeds continue updating.
+
+Fullscreen foreground applications and mouse dragging suppress opening. Escape dismisses an open popup; it is observed without intercepting the key, so other applications still receive it. After dismissal, leave the corner before invoking again.
+
+Edit `@Resources/CalendarPeek.ini`, then refresh the skin:
+
+| Setting | Default / options |
+|---|---|
+| `Enabled` | `1`; use `0` to disable |
+| `Corner` | `TopLeft`; also `TopRight`, `BottomLeft`, `BottomRight` |
+| `TriggerSize` | `6` physical pixels, range 1–32 |
+| `OpenDelayMs` | `400`, range 100–5000 ms |
+| `CloseDelayMs` | `600`, range 100–5000 ms |
+| `IdleMode` | `Desktop` keeps the desktop calendar; `Hidden` hides it completely when idle |
+| `SuppressFullscreen` | `1`; use `0` to allow opening over fullscreen apps |
+
+The controller uses built-in Windows PowerShell 5.1 and .NET; AutoHotkey is not required. RunCommand starts it hidden and terminates it when the skin is refreshed, unloaded, or Rainmeter exits. It does not register global hotkeys or change machine-wide execution policy. Organizational policies may prevent it from starting; in that case disable `Enabled` to keep the existing desktop calendar. Its diagnostic appears in the `MeasureCalendarPeek` measure.
+
+Install the same 1.2.0 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
 
 ## Configure your calendar
 

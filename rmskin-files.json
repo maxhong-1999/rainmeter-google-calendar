@@ -1,5 +1,8 @@
 [
   "GoogleCalendar.ini",
+  "@Resources/CalendarPeek.cs",
+  "@Resources/CalendarPeek.ps1",
+  "@Resources/CalendarPeek.ini",
   "@Resources/calendar-events.mjs",
   "@Resources/calendar-feed-store.mjs",
   "@Resources/calendar-host.mjs",

@@ -65,6 +65,9 @@ test('release allowlist contains only runtime skin files', async () => {
 
   assert.deepEqual(runtimeFiles, [
     'GoogleCalendar.ini',
+    '@Resources/CalendarPeek.cs',
+    '@Resources/CalendarPeek.ps1',
+    '@Resources/CalendarPeek.ini',
     '@Resources/calendar-events.mjs',
     '@Resources/calendar-feed-store.mjs',
     '@Resources/calendar-host.mjs',
@@ -113,7 +116,13 @@ test('GitHub Actions verifies the project on Windows for pushes and pull request
 });
 
 test('bundled installer preserves local configuration and loads the calendar skin', async () => {
-  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.1.1.rmskin', import.meta.url));
+  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.2.0.rmskin', import.meta.url));
+  const bytes = await readFile(archive);
+  // Rainmeter's PackageFooter: little-endian int64 ZIP size, one flag byte, "RMSKIN\0".
+  const footer = bytes.subarray(-16);
+  assert.equal(footer.subarray(9).toString('ascii'), 'RMSKIN\0', 'Installer needs the Rainmeter package footer');
+  assert.equal(footer.readBigInt64LE(0), BigInt(bytes.length - 16));
+  assert.equal(footer[8], 0);
   const extractionDir = await mkdtemp(join(tmpdir(), 'rainmeter-rmskin-'));
   const escapedArchive = archive.replaceAll("'", "''");
   const escapedDestination = extractionDir.replaceAll("'", "''");
@@ -126,10 +135,12 @@ test('bundled installer preserves local configuration and loads the calendar ski
     ]);
     const manifest = await readFile(join(extractionDir, 'RMSKIN.ini'), 'utf8');
 
-    assert.match(manifest, /^Version=1\.1\.1$/m);
+    assert.match(manifest, /^Version=1\.2\.0$/m);
     assert.match(manifest, /^LoadType=Skin$/m);
     assert.match(manifest, /^Load=GoogleCalendar\\GoogleCalendar\.ini$/m);
-    assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc$/m);
+    assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc\|GoogleCalendar\\@Resources\\CalendarPeek\.ini$/m);
+    const peekConfig = await readFile(join(extractionDir, 'Skins', 'GoogleCalendar', '@Resources', 'CalendarPeek.ini'), 'utf8');
+    assert.match(peekConfig, /^\[Variables\]\r?$/m, 'Rainmeter preserves only the Variables section during upgrades');
     const runtimeFiles = JSON.parse(await readProjectFile('rmskin-files.json'));
     for (const file of runtimeFiles) {
       const packaged = await readFile(join(extractionDir, 'Skins', 'GoogleCalendar', file), 'utf8');

@@ -10,7 +10,7 @@ Use a three-part version such as `1.0.0`:
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-release.ps1 -Version 1.0.0
 ```
 
-The command runs `pnpm test` first. On success, it writes a clean tree to `output/rmskin-stage` and creates `output/GoogleCalendar_<version>.rmskin`. The archive contains the runtime skin, its audited `RMSKIN.ini`, and placeholder `Private.inc` and `ChromeProfile.inc` files generated only from the tracked examples.
+The command runs `pnpm test` first. On success, it writes a clean tree to `output/rmskin-stage` and creates `output/GoogleCalendar_<version>.rmskin`. The archive contains the runtime skin, its audited `RMSKIN.ini`, and placeholder `Private.inc` and `ChromeProfile.inc` files generated only from the tracked examples. It appends the 16-byte package footer used by Rainmeter's [official packager](https://github.com/rainmeter/rainmeter/blob/master/Library/DialogPackage.cpp); a ZIP renamed to `.rmskin` is insufficient.
 
 Do not replace those generated files with the local files from a working installation.
 
@@ -46,6 +46,9 @@ Keep the resulting `.rmskin` inside `output/`, which is ignored by Git.
 4. Install the same `.rmskin` again as an update.
 5. Confirm the disposable values remain after the update; this verifies `VariableFiles` preservation.
 6. Check previous/next month navigation, Today, theme settings, ten-minute refresh behavior, and the configured double-click launcher.
+7. Set `CalendarPeek.ini` to a non-default corner, upgrade, and confirm the setting is preserved. Test 400 ms corner dwell, moving into the popup, 600 ms outside dismissal, Escape, fullscreen suppression, and restoring the desktop position after refreshing while the popup is open.
+
+Version 1.2.0 includes the PowerShell/C# hot-corner controller and its default settings. The `VariableFiles` value must also contain `GoogleCalendar\@Resources\CalendarPeek.ini`. Its settings must remain in `[Variables]`: Rainmeter's [installer](https://github.com/rainmeter/rainmeter/blob/master/Library/DialogInstall.cpp) preserves only matching keys in this section. The local `CalendarPeek.state` recovery file must never be packaged. No AutoHotkey installation or third-party executable is required.
 
 ## 5. Publish the GitHub Release
 
