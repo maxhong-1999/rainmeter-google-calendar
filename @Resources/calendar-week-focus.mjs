@@ -1,9 +1,17 @@
 const clock = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' });
 
-export function weekTracks(week) {
+export function weekTracks(week, contentHeight = 0, pointerY = null) {
   const focused = Number.isInteger(week) && week >= 0 && week < 6;
-  return Array.from({ length: 6 }, (_, index) => `${focused ? index === week ? 172 : 28 : 52}px`).join(' ');
+  if (!focused) return Array(6).fill('52px').join(' ');
+  let height = 30 + (Number.isFinite(contentHeight) ? contentHeight : 0);
+  if (Number.isFinite(pointerY) && pointerY >= 0 && pointerY <= 317) {
+    const origin = week * (312 / 5 + 1);
+    if (week > 0) height = Math.max(height, (origin - pointerY + 2) * 5 / week);
+    if (week < 5) height = Math.max(height, (pointerY + 2 - origin) / (1 - week / 5));
+  }
+  height = Math.max(52, Math.min(108, Math.ceil(height)));
+  return Array.from({ length: 6 }, (_, index) => `${index === week ? height : (312 - height) / 5}px`).join(' ');
 }
 
 export function formatEventTime(event, day) {
@@ -23,11 +31,23 @@ export function createWeekFocusController(grid, {
   hoverAllowed = () => grid.ownerDocument.defaultView.matchMedia('(hover: hover) and (pointer: fine)').matches,
 } = {}) {
   let active = null, entering = null, leaving = null, pendingWeek = null;
+  let pointerY = null;
   const days = () => [...grid.querySelectorAll('.day')];
   function cancelEnter() { if (entering !== null) clearTimer(entering); entering = pendingWeek = null; }
   function cancelLeave() { if (leaving !== null) clearTimer(leaving); leaving = null; }
+  function contentHeight(week) {
+    return Math.max(0, ...days().filter(day => Number(day.dataset.week) === week).map(day =>
+      [...(day.querySelector('.day-details')?.children || [])].reduce((height, item) => {
+        const style = grid.ownerDocument.defaultView.getComputedStyle(item);
+        return height + item.getBoundingClientRect().height + (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
+      }, 0)));
+  }
+  function trackPointer(event) {
+    if (event.pointerType && event.pointerType !== 'mouse') return;
+    if (Number.isFinite(event.clientY)) pointerY = event.clientY - grid.getBoundingClientRect().top;
+  }
   function refresh() {
-    grid.style.gridTemplateRows = weekTracks(active);
+    grid.style.gridTemplateRows = weekTracks(active, active === null ? 0 : contentHeight(active), grid.classList.contains('keyboard-focus') ? null : pointerY);
     grid.classList.toggle('is-week-expanded', active !== null);
     if (active === null) delete grid.dataset.activeWeek;
     else grid.dataset.activeWeek = String(active);
@@ -44,9 +64,11 @@ export function createWeekFocusController(grid, {
     grid.classList.toggle('keyboard-focus', keyboard);
     refresh();
   }
-  function reset() { cancelEnter(); cancelLeave(); select(null); }
+  function reset() { cancelEnter(); cancelLeave(); pointerY = null; select(null); }
+  grid.addEventListener('pointermove', trackPointer);
   grid.addEventListener('pointerover', event => {
     if ((event.pointerType && event.pointerType !== 'mouse') || !hoverAllowed()) return;
+    trackPointer(event);
     const day = event.target.closest('.day');
     if (!day || !grid.contains(day)) return;
     const week = Number(day.dataset.week);
@@ -57,7 +79,7 @@ export function createWeekFocusController(grid, {
     entering = setTimer(() => { entering = pendingWeek = null; select(week); }, 80);
   });
   grid.addEventListener('pointerleave', () => {
-    cancelEnter(); cancelLeave();
+    cancelEnter(); cancelLeave(); pointerY = null;
     const focused = grid.ownerDocument.activeElement?.closest('.day');
     if (grid.classList.contains('keyboard-focus') && focused && grid.contains(focused)) {
       select(Number(focused.dataset.week), true); return;

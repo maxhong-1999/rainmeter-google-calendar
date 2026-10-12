@@ -117,7 +117,7 @@ test('GitHub Actions verifies the project on Windows for pushes and pull request
 });
 
 test('bundled installer preserves local configuration and loads the calendar skin', async () => {
-  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.3.0.rmskin', import.meta.url));
+  const archive = fileURLToPath(new URL('../releases/GoogleCalendar_1.3.1.rmskin', import.meta.url));
   const bytes = await readFile(archive);
   // Rainmeter's PackageFooter: little-endian int64 ZIP size, one flag byte, "RMSKIN\0".
   const footer = bytes.subarray(-16);
@@ -136,7 +136,7 @@ test('bundled installer preserves local configuration and loads the calendar ski
     ]);
     const manifest = await readFile(join(extractionDir, 'RMSKIN.ini'), 'utf8');
 
-    assert.match(manifest, /^Version=1\.3\.0$/m);
+    assert.match(manifest, /^Version=1\.3\.1$/m);
     assert.match(manifest, /^LoadType=Skin$/m);
     assert.match(manifest, /^Load=GoogleCalendar\\GoogleCalendar\.ini$/m);
     assert.match(manifest, /^VariableFiles=GoogleCalendar\\@Resources\\Private\.inc\|GoogleCalendar\\@Resources\\ChromeProfile\.inc\|GoogleCalendar\\@Resources\\CalendarPeek\.ini$/m);

@@ -49,7 +49,7 @@ Keep the resulting `.rmskin` inside `output/`, which is ignored by Git.
 7. Set `CalendarPeek.ini` to a non-default corner, upgrade, and confirm the setting is preserved. Test 400 ms corner dwell, moving into the popup, 600 ms outside dismissal, Escape, fullscreen suppression, and restoring the desktop position after refreshing while the popup is open.
 8. Hover each horizontal week row and confirm full titles and times appear while other rows show only dates. Check scrolling, pointer exit after a click, rapid week changes, keyboard navigation across a feed refresh, automatic month rollover, and reduced-motion preferences. (각 주를 펼쳐 제목·시간과 다른 주의 날짜 표시를 확인합니다. 스크롤, 클릭 후 이탈, 빠른 주 이동, 갱신 중 키보드 탐색, 자동 월 변경과 움직임 줄이기도 검사합니다.)
 
-Version 1.3.0 includes `calendar-week-focus.mjs` in the runtime allowlist and installer. (1.3.0은 주 선택 제어 모듈을 배포 목록과 설치 파일에 포함합니다.)
+Version 1.3.1 includes `calendar-week-focus.mjs` in the runtime allowlist and installer. Check adaptive height for empty, single-event and dense weeks, stationary-pointer retention when switching weeks, and height shrinking after feed updates. (1.3.1은 주 선택 제어 모듈을 배포 목록과 설치 파일에 포함합니다. 빈 주·한 일정·많은 일정의 적응형 높이, 주 변경 중 커서 유지와 갱신 후 높이 축소를 확인합니다.)
 
 Version 1.2.0 includes the PowerShell/C# hot-corner controller and its default settings. The `VariableFiles` value must also contain `GoogleCalendar\@Resources\CalendarPeek.ini`. Its settings must remain in `[Variables]`: Rainmeter's [installer](https://github.com/rainmeter/rainmeter/blob/master/Library/DialogInstall.cpp) preserves only matching keys in this section. The local `CalendarPeek.state` recovery file must never be packaged. No AutoHotkey installation or third-party executable is required.
 

@@ -22,7 +22,7 @@ test('local calendar UI fulfils the standalone widget contract', async () => {
   assert.match(html, /aria-label="이전 달"/);
   assert.match(html, /aria-label="다음 달"/);
   assert.match(html, /<script type="importmap">[\s\S]*?"ical\.js"\s*:\s*"\.\/vendor\/ical\.js"[\s\S]*?<\/script>/);
-  assert.match(html, /<script type="module" src="\.\/calendar\.js"><\/script>/);
+  assert.match(html, /<script type="module" src="\.\/calendar\.js(?:\?v=\d+\.\d+\.\d+)?"><\/script>/);
   assert.match(css, /html,\s*body\s*\{[^}]*width:\s*600px;[^}]*height:\s*420px;/s);
   assert.match(css, /\.calendar-shell\s*\{[^}]*width:\s*600px;[^}]*height:\s*420px;[^}]*border-radius:\s*26px;/s);
   assert.match(js, /buildMonthMatrix\(state\.year,\s*state\.monthIndex\)/);
@@ -256,6 +256,13 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(js, /window\.receiveScreenColor = function receiveScreenColor\(\)/);
   assert.match(js, /themeSettingsPanel\.contains\(event\.target\)/);
   assert.doesNotMatch(js, /function (?:applyTheme|setThemePanelOpen)\(/);
+});
+
+test('updated week controls use matching versioned script URLs to bypass cached modules', async () => {
+  const [html, js] = await Promise.all([readResource('calendar.html'), readResource('calendar.js')]);
+  const version = html.match(/src="\.\/calendar\.js\?v=(\d+\.\d+\.\d+)"/)?.[1];
+  assert.ok(version, 'the entry script needs a release version in its URL');
+  assert.ok(js.includes(`from './calendar-week-focus.mjs?v=${version}'`), 'the updated module needs the same cache version');
 });
 
 test('color picker includes bounded Korean YourPicker installation help wired through the host bridge', async () => {

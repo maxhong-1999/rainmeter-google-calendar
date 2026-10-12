@@ -18,14 +18,14 @@ If YourPicker is missing, clicking the eyedropper inside the color popup shows i
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.3.0.rmskin](releases/GoogleCalendar_1.3.0.rmskin) using the download button on the repository file page.
+1. Download [GoogleCalendar_1.3.1.rmskin](releases/GoogleCalendar_1.3.1.rmskin) using the download button on the repository file page.
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-Version 1.3.0 adds animated week expansion on hover. It also includes the button-free hot-corner access introduced in 1.2.0. (1.3.0은 마우스를 올린 주의 일정을 부드럽게 펼칩니다. 1.2.0의 화면 모서리 호출 기능도 포함합니다.)
+Version 1.3.1 adapts week expansion to event content and cursor position, limiting height to 52–108 pixels instead of a fixed 172 pixels. It includes the button-free hot-corner access introduced in 1.2.0. (1.3.1은 일정 내용과 커서 위치에 맞춰 52~108픽셀로 펼쳐집니다. 1.2.0의 화면 모서리 호출 기능도 포함합니다.)
 
 v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedropper and color-reading fix, plus missing-plugin guidance with an official installation-page link. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
@@ -56,7 +56,7 @@ Edit `@Resources/CalendarPeek.ini`, then refresh the skin:
 
 The controller uses built-in Windows PowerShell 5.1 and .NET; AutoHotkey is not required. RunCommand starts it hidden and terminates it when the skin is refreshed, unloaded, or Rainmeter exits. It does not register global hotkeys or change machine-wide execution policy. Organizational policies may prevent it from starting; in that case disable `Enabled` to keep the existing desktop calendar. Its diagnostic appears in the `MeasureCalendarPeek` measure.
 
-Install the same 1.3.0 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
+Install the same 1.3.1 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
 
 ## Configure your calendar
 
@@ -88,6 +88,7 @@ Set `ChromePath` only if Chrome is installed elsewhere. Double-click the calenda
 
 - Hover any date for 80 ms to expand its entire horizontal week row. Other weeks show dates only; moving outside restores the normal layout after 140 ms. The height transition lasts 220 ms without changing the 600 x 420 window. (날짜 위에 마우스를 80밀리초 두면 해당 주의 가로줄 전체가 펼쳐지고 다른 주는 날짜만 표시합니다. 밖으로 이동하면 140밀리초 뒤 복귀하며, 220밀리초 동안 높이가 전환됩니다. 창 크기는 유지됩니다.)
 - Expanded days show every event's full title and time in Korea Standard Time, or an all-day label. Scroll inside a date to read additional events. Keyboard users can Tab into the dates and move with arrow keys; reduced-motion preferences disable transitions. (펼친 날짜에서는 모든 일정의 제목과 한국 시간 또는 종일 표시를 볼 수 있습니다. 일정이 많으면 날짜 안에서 스크롤합니다. 탭과 방향키로도 선택할 수 있으며, 움직임 줄이기 설정을 따릅니다.)
+- Expansion uses only the height needed by content, capped at 108 pixels. Cursor anchoring preserves the hovered week during transitions; empty weeks normally keep their default height. (내용에 필요한 높이만 늘어나며 최대 108픽셀입니다. 전환 중 커서가 선택한 주에 머물도록 보정하고, 빈 주는 대체로 기본 높이를 유지합니다.)
 - Select the left or right arrow to move between months.
 - Select **Today** to return to the current month.
 - Select the gear icon to set the shared background color, foreground color, and glass opacity. Settings are stored locally in the calendar surface.

@@ -6,12 +6,39 @@ import { eventsForMonth } from '../@Resources/calendar-events.mjs';
 test('week expansion preserves the grid height and readable date rows', () => {
   assert.deepEqual(weekTracks(null).split(' ').map(parseFloat), [52,52,52,52,52,52]);
   for (let week=0;week<6;week++) {
-    const tracks=weekTracks(week).split(' ').map(parseFloat);
-    assert.equal(tracks[week], 172);
-    assert.equal(tracks.reduce((sum,n)=>sum+n,0)+5,317);
-    assert.ok(tracks.every(n=>n>=28));
+    const tracks=weekTracks(week, 400).split(' ').map(parseFloat);
+    assert.equal(tracks[week], 108);
+    assert.ok(Math.abs(tracks.reduce((sum,n)=>sum+n,0)+5-317)<0.001);
+    assert.ok(tracks.every(n=>n>=40.8));
   }
   for (const invalid of [-1,6,NaN,'2']) assert.equal(weekTracks(invalid),weekTracks(null));
+});
+
+test('week height adapts to content without exceeding the motion budget', () => {
+  const height = content => parseFloat(weekTracks(2, content).split(' ')[2]);
+  assert.equal(height(0), 52);
+  assert.equal(height(44), 74);
+  assert.equal(height(400), 108);
+  assert.equal(height(NaN), 52);
+  assert.equal(height(44), 74, 'a shorter refreshed list can shrink again');
+});
+
+test('retargeting keeps the stationary pointer inside the selected week', () => {
+  for (let oldWeek=0;oldWeek<6;oldWeek++) {
+    for (const oldContent of [0,41,400]) {
+      const oldTracks=weekTracks(oldWeek,oldContent).split(' ').map(parseFloat);
+      for (let week=0;week<6;week++) {
+        const oldTop=oldTracks.slice(0,week).reduce((sum,n)=>sum+n+1,0);
+        for (const ratio of [0.01,0.5,0.99]) {
+          const pointerY=oldTop+oldTracks[week]*ratio;
+          const tracks=weekTracks(week,0,pointerY).split(' ').map(parseFloat);
+          const top=tracks.slice(0,week).reduce((sum,n)=>sum+n+1,0);
+          assert.ok(pointerY>=top&&pointerY<=top+tracks[week],`week ${oldWeek} to ${week} at ${pointerY}`);
+          assert.ok(tracks[week]>=52&&tracks[week]<=108);
+        }
+      }
+    }
+  }
 });
 test('details distinguish all-day, timed and overnight events in Seoul time', () => {
   assert.equal(formatEventTime({allDay:true},'2026-10-12'),'종일');
