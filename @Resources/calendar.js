@@ -11,6 +11,7 @@ import {
 import { openGoogleCalendar, shouldOpenGoogleCalendar } from './calendar-host.mjs';
 import { createThemeSettingsController } from './calendar-theme-ui.mjs';
 import { createColorPicker } from './calendar-color-picker.mjs';
+import { createWeekFocusController, formatEventTime } from './calendar-week-focus.mjs';
 
 const CALENDAR_FEEDS = [
   { source: 'personal', path: '../DownloadFile/personal.ics' },
@@ -33,6 +34,7 @@ const themeOpacityValue = document.querySelector('#theme-opacity-value');
 const themeReset = document.querySelector('#theme-reset');
 const nextButton = document.querySelector('#next-month');
 const feedStore = createCalendarFeedStore(CALENDAR_FEEDS, eventsForMonth);
+const weekFocus = createWeekFocusController(grid);
 
 let themeStorage = null;
 try {
@@ -90,29 +92,66 @@ function dateKey(cell) {
 function render() {
   const currentDate = new Date();
   monthLabel.textContent = formatMonthLabel(state.year, state.monthIndex);
-  grid.replaceChildren();
+  const month = `${state.year}-${state.monthIndex}`;
+  const sameMonth = grid.dataset.month === month;
+  if (!sameMonth) grid.replaceChildren();
 
-  for (const cell of buildMonthMatrix(state.year, state.monthIndex)) {
-    const day = document.createElement('section');
+  const cells = buildMonthMatrix(state.year, state.monthIndex);
+  const todayIndex = cells.findIndex(cell => isSameLocalDay(cell, currentDate));
+  for (const [index, cell] of cells.entries()) {
+    const day = sameMonth ? grid.children[index] : document.createElement('section');
+    const scrollTop = day.querySelector('.day-details')?.scrollTop || 0;
     day.className = `day${cell.inMonth ? '' : ' outside-month'}${isSameLocalDay(cell, currentDate) ? ' today' : ''}`;
     day.setAttribute('role', 'gridcell');
     day.setAttribute('aria-label', `${cell.monthIndex + 1}월 ${cell.day}일`);
+    day.dataset.week = String(Math.floor(index / 7));
+    day.dataset.date = dateKey(cell);
+    if (!sameMonth) day.tabIndex = index === Math.max(0, todayIndex) ? 0 : -1;
 
-    const dayNumber = document.createElement('span');
+    const dayNumber = day.querySelector('.day-number') || document.createElement('span');
     dayNumber.className = 'day-number';
     dayNumber.textContent = String(cell.day);
-    day.append(dayNumber);
+    if (!sameMonth) day.append(dayNumber);
 
     const events = eventsByDay.get(dateKey(cell)) || [];
+    const compact = day.querySelector('.day-events') || document.createElement('div');
+    compact.className = 'day-events';
+    compact.replaceChildren();
     for (const eventDetails of events.slice(0, 2)) {
       const event = document.createElement('div');
       event.className = `event event-${eventDetails.source}`;
       event.textContent = eventDetails.title;
       event.title = eventDetails.title;
-      day.append(event);
+      compact.append(event);
     }
-    grid.append(day);
+    if (!sameMonth) day.append(compact);
+    const details = day.querySelector('.day-details') || document.createElement('div');
+    details.className = 'day-details';
+    details.replaceChildren();
+    for (const eventDetails of events) {
+      const item = document.createElement('div');
+      item.className = `event-detail event-${eventDetails.source}`;
+      const title = document.createElement('span');
+      title.className = 'event-detail-title';
+      title.textContent = eventDetails.title;
+      const time = document.createElement('span');
+      time.className = 'event-detail-time';
+      time.textContent = formatEventTime(eventDetails, dateKey(cell));
+      item.append(title, time);
+      details.append(item);
+    }
+    if (!events.length) {
+      const empty = document.createElement('span');
+      empty.className = 'day-details-empty';
+      empty.textContent = '일정 없음';
+      details.append(empty);
+    }
+    if (!sameMonth) day.append(details);
+    details.scrollTop = scrollTop;
+    if (!sameMonth) grid.append(day);
   }
+  grid.dataset.month = month;
+  weekFocus.refresh();
 }
 
 function syncMessage(snapshot) {
@@ -130,16 +169,20 @@ function applySnapshot(snapshot) {
 }
 
 function syncStateToToday() {
+  const { year, monthIndex } = state;
   syncMonthStateToDate(state, followsToday, new Date());
+  if (state.year !== year || state.monthIndex !== monthIndex) weekFocus.reset();
 }
 
 function updateMonth(delta) {
+  weekFocus.reset();
   followsToday = false;
   Object.assign(state, shiftMonth(state.year, state.monthIndex, delta));
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));
 }
 
 function goToToday() {
+  weekFocus.reset();
   followsToday = true;
   syncStateToToday();
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));

@@ -150,11 +150,12 @@ function addOccurrence(grouped, details, window, zone) {
     let endKey = dateKeyFromTime(endDate);
     if (endKey <= startKey) endKey = shiftDateKey(startKey, 1);
     const startMs = wallTimeToEpoch(startDate, zone);
+    const endMs = wallTimeToEpoch(endDate, zone);
     const firstKey = startKey < window.startKey ? window.startKey : startKey;
     const lastExclusiveKey = endKey > window.endKey ? window.endKey : endKey;
 
     for (let key = firstKey; key < lastExclusiveKey; key = shiftDateKey(key, 1)) {
-      addToDay(grouped, key, { title, allDay, startMs });
+      addToDay(grouped, key, { title, allDay, startMs, endMs });
     }
     return;
   }
@@ -170,7 +171,7 @@ function addOccurrence(grouped, details, window, zone) {
   const firstKey = eventFirstKey < window.startKey ? window.startKey : eventFirstKey;
   const lastKey = eventLastKey > windowLastKey ? windowLastKey : eventLastKey;
   for (let key = firstKey; key <= lastKey; key = shiftDateKey(key, 1)) {
-    addToDay(grouped, key, { title, allDay, startMs });
+    addToDay(grouped, key, { title, allDay, startMs, endMs });
   }
 }
 

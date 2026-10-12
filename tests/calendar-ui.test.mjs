@@ -136,7 +136,7 @@ test('every fixed grid row visibly fits a date and two event pills', async () =>
   assert.match(css, /\.calendar-header\s*\{[^}]*height:\s*44px;/s);
   assert.match(css, /\.calendar-content\s*\{[^}]*margin-top:\s*4px;/s);
   assert.match(css, /\.weekday-row\s*\{[^}]*height:\s*17px;/s);
-  assert.match(css, /\.calendar-grid\s*\{[^}]*grid-template-rows:\s*repeat\(6,\s*52px\);[^}]*gap:\s*1px;/s);
+  assert.match(css, /\.calendar-grid\s*\{[^}]*height:\s*317px;[^}]*grid-template-rows:\s*52px 52px 52px 52px 52px 52px;[^}]*gap:\s*1px;/s);
   assert.match(css, /\.day\s*\{[^}]*padding:\s*1px\s+4px;/s);
   assert.match(css, /\.event\s*\{[^}]*margin-top:\s*1px;[^}]*height:\s*12px;[^}]*padding:\s*0\s+5px;[^}]*font-size:\s*10px;[^}]*line-height:\s*1;/s);
 

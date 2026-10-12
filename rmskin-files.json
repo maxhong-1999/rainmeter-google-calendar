@@ -10,6 +10,7 @@
   "@Resources/calendar-model.mjs",
   "@Resources/calendar-theme-ui.mjs",
   "@Resources/calendar-theme.mjs",
+  "@Resources/calendar-week-focus.mjs",
   "@Resources/calendar.css",
   "@Resources/calendar.html",
   "@Resources/calendar.js",

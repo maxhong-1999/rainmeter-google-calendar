@@ -168,11 +168,15 @@ h1 {
 }
 
 .calendar-grid {
-  grid-template-rows: repeat(6, 52px);
+  height: 317px;
+  grid-template-rows: 52px 52px 52px 52px 52px 52px;
   gap: 1px;
+  transition: grid-template-rows 220ms cubic-bezier(.22, .61, .36, 1);
 }
 
 .day {
+  position: relative;
+  min-height: 0;
   min-width: 0;
   overflow: hidden;
   padding: 1px 4px;
@@ -229,6 +233,53 @@ h1 {
 .event-holidays {
   box-shadow: inset 0 0 0 1px rgb(var(--theme-foreground-rgb) / .78);
 }
+
+.day-events {
+  opacity: 1;
+  transition: opacity 140ms ease;
+}
+.day-details {
+  position: absolute;
+  inset: 27px 4px 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--theme-foreground-rgb) / .5) transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity 140ms ease, transform 180ms cubic-bezier(.22, .61, .36, 1), visibility 0s 220ms;
+}
+.is-week-expanded .day-events { opacity: 0; pointer-events: none; }
+.is-week-focused .day-details {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 60ms, 0s, 0s;
+}
+.event-detail {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 4px;
+  padding: 5px 4px;
+  border-radius: 7px;
+  background: var(--event);
+  box-shadow: inset 0 0 0 1px rgb(var(--theme-foreground-rgb) / .64);
+  color: var(--text);
+  text-align: center;
+  text-shadow: 0 1px 4px var(--theme-shadow);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.event-detail.event-holidays { box-shadow: inset 0 0 0 1px rgb(var(--theme-foreground-rgb) / .78); }
+.event-detail-title { font-weight: 700; overflow-wrap: anywhere; }
+.event-detail-time { font-size: 9px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.day-details-empty { display: block; margin-top: 8px; color: var(--muted); text-align: center; font-size: 10px; }
+.day:focus-visible { outline: 2px solid var(--text); outline-offset: -2px; }
+.keyboard-focus, .keyboard-focus .day-events, .keyboard-focus .day-details { transition: none; }
 
 h1,
 .weekday-row,
@@ -410,4 +461,5 @@ html[data-sync="error"] #sync-state { color: rgb(var(--theme-foreground-rgb) / .
 
 @media (prefers-reduced-motion: reduce) {
   .nav-button, .today-button, .settings-button, .theme-reset { transition: none; }
+  .calendar-grid, .day-events, .day-details { transition: none; }
 }
