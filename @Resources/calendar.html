@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>로컬 캘린더</title>
-    <link rel="stylesheet" href="./calendar.css">
+    <link rel="stylesheet" href="./calendar.css?v=1.4.0">
     <script type="importmap">
       {
         "imports": {
@@ -12,7 +12,7 @@
         }
       }
     </script>
-    <script type="module" src="./calendar.js?v=1.3.1"></script>
+    <script type="module" src="./calendar.js?v=1.4.0"></script>
   </head>
   <body>
     <main class="calendar-shell" aria-label="월간 일정">
@@ -22,6 +22,7 @@
         <div class="month-heading">
           <h1 id="month-label"></h1>
           <p id="sync-state" role="status" aria-live="polite"></p>
+          <button id="add-event" class="add-event" type="button" aria-label="일정 추가" title="일정 추가">＋</button>
         </div>
         <button class="settings-button" id="theme-settings-button" type="button"
           aria-label="색상 설정" aria-expanded="false" aria-controls="theme-settings-panel">
@@ -34,6 +35,44 @@
           <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
         </div>
         <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="월간 일정표"></div>
+      </section>
+      <section id="calendar-editor" class="calendar-editor" role="dialog" aria-modal="true" aria-labelledby="editor-heading" hidden>
+        <header class="editor-header"><h2 id="editor-heading">일정 추가</h2><button id="editor-close" type="button" aria-label="편집창 닫기">×</button></header>
+        <div class="editor-content">
+          <div id="editor-setup" hidden>
+            <p id="editor-connection-status" role="status"></p>
+            <p>처음 한 번 데스크톱 앱용 구글 연결 설정 파일을 선택한 뒤, 열린 브라우저에서 계정 권한을 허용해 주세요.</p>
+            <p><a href="https://developers.google.com/workspace/calendar/api/quickstart/python#authorize_credentials_for_a_desktop_application" target="_blank" rel="noreferrer">최초 연결 설정 만드는 방법</a></p>
+            <button id="editor-connect" type="button">연결 설정 파일 선택</button>
+            <input id="editor-client-file" type="file" accept=".json,application/json" hidden>
+            <label id="editor-calendar-field" hidden>편집할 달력<select id="editor-calendar" aria-label="편집할 달력"></select></label>
+            <button id="editor-disconnect" type="button" hidden>이 기기 연결 해제</button>
+          </div>
+          <form id="editor-form" hidden>
+            <label>제목<input id="editor-title" type="text" maxlength="200" required autocomplete="off"></label>
+            <label class="editor-check"><input id="editor-all-day" type="checkbox">종일</label>
+            <div class="editor-dates">
+              <label>시작 날짜<input id="editor-start-date" type="date" required></label>
+              <label>시작 시간<input id="editor-start-time" type="time" required></label>
+              <label>종료 날짜<input id="editor-end-date" type="date" required></label>
+              <label>종료 시간<input id="editor-end-time" type="time" required></label>
+            </div>
+            <p class="editor-note">한국 시간 기준입니다. 종일 일정의 종료 날짜는 마지막 날입니다.</p>
+            <button id="editor-save" type="submit">구글 캘린더에 저장</button>
+          </form>
+          <div id="editor-view" hidden>
+            <h3 id="editor-event-title"></h3><p id="editor-event-time"></p>
+            <p id="editor-readonly" class="editor-note"></p>
+            <button id="editor-delete" type="button">일정 삭제</button>
+            <div id="editor-confirm" hidden>
+              <p>이 일정을 구글 캘린더에서 삭제할까요? 반복 일정은 선택한 회차만 삭제합니다.</p>
+              <button id="editor-delete-confirm" type="button">삭제 확인</button>
+              <button id="editor-delete-cancel" type="button">취소</button>
+            </div>
+          </div>
+          <p id="editor-status" role="status" aria-live="polite"></p>
+        </div>
+        <footer><span>날짜를 오른쪽 클릭해도 추가할 수 있습니다.</span><button id="editor-account" type="button">구글 계정</button></footer>
       </section>
       <section class="theme-settings-panel" id="theme-settings-panel" role="dialog" aria-label="색상 설정" hidden>
         <div class="theme-field"><label for="theme-background-hex">배경색</label><span class="theme-color-controls"><input id="theme-background-hex" class="theme-hex" type="text" inputmode="text" maxlength="7" pattern="#[0-9A-Fa-f]{6}" spellcheck="false" aria-label="배경색 HEX 코드" value="#FFFFFF"><button id="theme-background" class="theme-swatch" type="button" value="#FFFFFF" aria-label="배경색 선택창 열기" aria-haspopup="dialog"></button></span></div>

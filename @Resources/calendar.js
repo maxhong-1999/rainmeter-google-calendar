@@ -1,5 +1,5 @@
 import { eventsForMonth } from './calendar-events.mjs';
-import { createCalendarFeedStore } from './calendar-feed-store.mjs';
+import { createCalendarFeedStore, mergeMonthMaps } from './calendar-feed-store.mjs';
 import {
   buildMonthMatrix,
   formatMonthLabel,
@@ -11,7 +11,8 @@ import {
 import { openGoogleCalendar, shouldOpenGoogleCalendar } from './calendar-host.mjs';
 import { createThemeSettingsController } from './calendar-theme-ui.mjs';
 import { createColorPicker } from './calendar-color-picker.mjs';
-import { createWeekFocusController, formatEventTime } from './calendar-week-focus.mjs?v=1.3.1';
+import { createWeekFocusController, formatEventTime } from './calendar-week-focus.mjs?v=1.4.0';
+import { createCalendarEditor } from './calendar-editor.mjs?v=1.4.0';
 
 const CALENDAR_FEEDS = [
   { source: 'personal', path: '../DownloadFile/personal.ics' },
@@ -45,6 +46,10 @@ const state = monthStateForDate(new Date());
 let followsToday = true;
 
 let eventsByDay = new Map();
+const editor = createCalendarEditor({
+  grid, getMonth:()=>state,
+  onChange:()=>applySnapshot(feedStore.snapshot(state.year,state.monthIndex)),
+});
 
 const themeSettings = createThemeSettingsController({
   root: document.documentElement,
@@ -122,6 +127,7 @@ function render() {
       event.className = `event event-${eventDetails.source}`;
       event.textContent = eventDetails.title;
       event.title = eventDetails.title;
+      editor.bind(event,eventDetails,dateKey(cell));
       compact.append(event);
     }
     if (!sameMonth) day.append(compact);
@@ -138,6 +144,7 @@ function render() {
       time.className = 'event-detail-time';
       time.textContent = formatEventTime(eventDetails, dateKey(cell));
       item.append(title, time);
+      editor.bind(item,eventDetails,dateKey(cell));
       details.append(item);
     }
     if (!events.length) {
@@ -163,8 +170,13 @@ function syncMessage(snapshot) {
 
 function applySnapshot(snapshot) {
   eventsByDay = snapshot.eventsByDay;
+  const personal = editor.personalMap(state.year,state.monthIndex);
+  if (personal) {
+    const holidays = new Map([...eventsByDay].map(([day,events])=>[day,events.filter(event=>event.source==='holidays')]));
+    eventsByDay = mergeMonthMaps([['holidays',holidays],['personal',personal]]);
+  }
   document.documentElement.dataset.sync = snapshot.sync;
-  syncState.textContent = syncMessage(snapshot);
+  syncState.textContent = editor.message || syncMessage(snapshot);
   render();
 }
 
@@ -179,6 +191,7 @@ function updateMonth(delta) {
   followsToday = false;
   Object.assign(state, shiftMonth(state.year, state.monthIndex, delta));
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));
+  editor.reload(state.year,state.monthIndex);
 }
 
 function goToToday() {
@@ -186,6 +199,7 @@ function goToToday() {
   followsToday = true;
   syncStateToToday();
   applySnapshot(feedStore.snapshot(state.year, state.monthIndex));
+  editor.reload(state.year,state.monthIndex);
 }
 
 async function loadFeedText(feed) {
@@ -227,7 +241,9 @@ window.reloadCalendar = async function reloadCalendar() {
   syncState.textContent = syncMessage({ sync: 'loading' });
   const snapshot = await feedStore.reloadMonth(state.year, state.monthIndex, loadFeedText);
   applySnapshot(snapshot);
+  await editor.reload(state.year,state.monthIndex);
 };
 
 render();
 window.reloadCalendar();
+editor.initialize();

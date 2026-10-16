@@ -14,5 +14,5 @@ export function openGoogleCalendar(host = window) {
 }
 
 export function shouldOpenGoogleCalendar(target) {
-  return !target?.closest?.('button, a');
+  return !target?.closest?.('button, a, input, select, textarea, [role="button"], [role="dialog"]');
 }

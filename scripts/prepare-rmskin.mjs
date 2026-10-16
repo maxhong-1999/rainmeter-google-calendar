@@ -39,6 +39,7 @@ function assertSafeRelativePath(filePath) {
   if (lowered.endsWith('/private.inc') || lowered.endsWith('/chromeprofile.inc')) {
     throw new Error('Release allowlist must not include local configuration.');
   }
+  if (/\/calendarbridge(?:\.ini|response\.json(?:\.tmp)?)$/.test(lowered)) throw new Error('Release allowlist must not include local bridge data.');
 }
 
 async function readRuntimeFiles(rootDir) {
@@ -152,6 +153,8 @@ export async function prepareRmskinStage({ rootDir, outputDir, version }) {
     readFile(privateExamplePath, 'utf8'),
     readFile(profileExamplePath, 'utf8'),
   ]);
+  const bridgeConfig = await readFile(resolve(resolvedRoot, '@Resources', 'CalendarBridge.ini.example'), 'utf8');
+  if (bridgeConfig.replaceAll('\r\n','\n').trim() !== '[Variables]\nRequest=') throw new Error('Bridge configuration must be an empty request template.');
   assertPlaceholderConfiguration(privateConfig, chromeConfig);
 
   await rm(resolvedOutput, { recursive: true, force: true });
@@ -160,6 +163,7 @@ export async function prepareRmskinStage({ rootDir, outputDir, version }) {
   await copyRuntimeFiles(resolvedRoot, skinRoot, runtimeFiles);
   await writeFile(resolve(skinRoot, '@Resources', 'Private.inc'), privateConfig, 'utf8');
   await writeFile(resolve(skinRoot, '@Resources', 'ChromeProfile.inc'), chromeConfig, 'utf8');
+  await writeFile(resolve(skinRoot, '@Resources', 'CalendarBridge.ini'), bridgeConfig, 'utf8');
   await writeFile(resolve(resolvedOutput, 'RMSKIN.ini'), renderRmskinManifest(version), 'utf8');
 
   assertPublicText(privateConfig);

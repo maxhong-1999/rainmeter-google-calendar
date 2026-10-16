@@ -23,6 +23,8 @@ async function createFixture({ runtimeFiles = ['GoogleCalendar.ini', '@Resources
 
   await writeFixtureFile(rootDir, 'rmskin-files.json', JSON.stringify(runtimeFiles, null, 2));
   await writeFixtureFile(rootDir, '@Resources/Private.inc.example', privateExample);
+  await writeFixtureFile(rootDir, '@Resources/CalendarBridge.ini.example', '[Variables]\nRequest=\n');
+  await writeFixtureFile(rootDir, '@Resources/CalendarBridge.ini', '[Variables]\nRequest=DO_NOT_COPY_LOCAL_DATA\n');
   await writeFixtureFile(rootDir, '@Resources/ChromeProfile.inc.example', [
     '[Variables]',
     'ChromePath=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -48,6 +50,7 @@ test('stages runtime files and placeholder configuration without copying local v
   const privateConfig = await readFile(join(result.stageRoot, 'Skins', 'GoogleCalendar', '@Resources', 'Private.inc'), 'utf8');
   const profileConfig = await readFile(join(result.stageRoot, 'Skins', 'GoogleCalendar', '@Resources', 'ChromeProfile.inc'), 'utf8');
   const manifest = await readFile(join(result.stageRoot, 'RMSKIN.ini'), 'utf8');
+  assert.equal(await readFile(join(result.stageRoot,'Skins','GoogleCalendar','@Resources','CalendarBridge.ini'),'utf8'),'[Variables]\nRequest=\n');
 
   assert.equal(result.stageRoot, outputDir);
   assert.deepEqual(result.copiedFiles, ['GoogleCalendar.ini', '@Resources/calendar.html', '@Resources/vendor/ical.js']);

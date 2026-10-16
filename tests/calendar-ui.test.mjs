@@ -17,8 +17,8 @@ test('local calendar UI fulfils the standalone widget contract', async () => {
   ]);
   const source = `${html}\n${css}\n${js}`;
 
-  assert.doesNotMatch(`${html}\n${css}`, /https?:\/\//i);
-  assert.doesNotMatch(html, /<a\b/i);
+  assert.doesNotMatch(html, /<(?:script|link)[^>]+(?:src|href)="https?:\/\//i);
+  assert.match(html, /id="calendar-editor"[^>]*role="dialog"/);
   assert.match(html, /aria-label="이전 달"/);
   assert.match(html, /aria-label="다음 달"/);
   assert.match(html, /<script type="importmap">[\s\S]*?"ical\.js"\s*:\s*"\.\/vendor\/ical\.js"[\s\S]*?<\/script>/);
@@ -168,7 +168,7 @@ test('readability styling uses theme foreground contrast while retaining faded a
   assert.match(css, /\.day-number\s*\{[^}]*font-weight:\s*700;/s);
   assert.match(css, /\.event\s*\{[^}]*font-weight:\s*700;/s);
   assert.match(css, /\.nav-button,\s*\.settings-button\s*\{[^}]*font-weight:\s*800;/s);
-  assert.match(css, /h1,\s*\.weekday-row,\s*\.day-number,\s*\.event,\s*\.nav-button,\s*\.today-button,\s*\.settings-button,\s*\.theme-reset\s*\{[^}]*text-shadow:\s*0\s+1px\s+4px\s+var\(--theme-shadow\);/s);
+  assert.match(css, /h1,\s*\.weekday-row,\s*\.day-number,\s*\.event,\s*\.nav-button,\s*\.today-button,\s*\.settings-button,\s*\.theme-reset\s*\{[^}]*text-shadow:\s*0\s+1px\s+1px\s+var\(--theme-shadow\);/s);
   assert.match(css, /\.day\.outside-month\s*\{[^}]*opacity:\s*\.58;/s);
 });
 
@@ -235,7 +235,7 @@ test('theme settings retain the aligned, accessible color and opacity control co
   assert.match(css, /--theme-background-opacity:\s*\.78;/);
   assert.match(css, /--settings-surface-rgb:\s*3\s+18\s+36;/);
   assert.match(css, /--theme-shadow:/);
-  assert.match(css, /text-shadow:\s*0\s+1px\s+4px\s+var\(--theme-shadow\);/);
+  assert.match(css, /text-shadow:\s*0\s+1px\s+1px\s+var\(--theme-shadow\);/);
   assert.match(css, /\.calendar-shell\s*\{[^}]*background:\s*linear-gradient\(145deg,\s*rgb\(var\(--theme-background-rgb\)\s*\/\s*var\(--theme-background-opacity\)\),\s*var\(--panel\)\);/s);
   assert.match(css, /\.nav-button,\s*\.settings-button\s*\{[^}]*background:\s*rgb\(var\(--theme-background-rgb\)\s*\/\s*calc\(var\(--theme-background-opacity\)\s*\*\s*\.72\)\);/s);
   assert.match(css, /\.nav-button:hover,[^}]*background:\s*rgb\(var\(--theme-background-rgb\)\s*\/\s*calc\(var\(--theme-background-opacity\)\s*\*\s*\.84\)\);/s);

@@ -161,7 +161,12 @@ test('authored public sources allow only approved runtime URLs without opening c
   const externalUrls = sources.match(/https?:\/\/[^\s'"\]]+/gi) || [];
   assert.deepEqual(
     [...new Set(externalUrls)].sort(),
-    [holidayUrl, googleCalendarUrl, 'https://github.com/NSTechBytes/YourPicker/releases'].sort(),
+    [holidayUrl, googleCalendarUrl, 'https://github.com/NSTechBytes/YourPicker/releases',
+      'https://developers.google.com/workspace/calendar/api/quickstart/python#authorize_credentials_for_a_desktop_application',
+      'https://www.googleapis.com/calendar/v3','https://oauth2.googleapis.com/token',
+      'https://accounts.google.com/o/oauth2/v2/auth?','http://127.0.0.1:',
+      'https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.events.owned',
+      'https://www.googleapis.com/auth/calendar.calendarlist.readonly'].sort(),
   );
   assert.doesNotMatch(sources, /calendar\.google\.com\/calendar\/ical\/(?!ko\.south_korea%23holiday%40group\.v\.calendar\.google\.com\/public\/basic\.ics)/i);
   assert.doesNotMatch(sources, /CalendarURL\s*=\s*https?:\/\//i);

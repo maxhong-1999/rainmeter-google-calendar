@@ -38,6 +38,7 @@ function assertSafeManifestPath(relativePath) {
   assert.equal(segments.includes('downloadfile'), false);
   assert.doesNotMatch(lowerPath, /(?:^|\/)private\.inc$/);
   assert.doesNotMatch(lowerPath, /(?:^|\/)chromeprofile\.inc$/);
+  assert.doesNotMatch(lowerPath, /(?:^|\/)calendarbridge(?:\.ini|response\.json(?:\.tmp)?)$/);
 }
 
 async function readGitTrackedPaths() {
@@ -92,6 +93,9 @@ test('public examples and ignore rules preserve the local-only configuration con
   assert.match(ignore, /^@Resources\/Private\.inc$/m);
   assert.match(ignore, /^@Resources\/ChromeProfile\.inc$/m);
   assert.match(ignore, /^DownloadFile\/\*\.ics$/m);
+  assert.match(ignore, /^@Resources\/CalendarBridge\.ini$/m);
+  assert.match(ignore, /^@Resources\/CalendarBridgeResponse\.json$/m);
+  assert.match(ignore, /^@Resources\/CalendarBridgeResponse\.json\.tmp$/m);
   assert.match(ignore, /^node_modules\/$/m);
   assert.match(privateExample, /^\[Variables\]\r?\nCalendarURL=PASTE_YOUR_SECRET_ICAL_URL_HERE\s*$/);
   assert.match(profileExample, /^\[Variables\]\r?\n/);

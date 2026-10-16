@@ -18,18 +18,20 @@ If YourPicker is missing, clicking the eyedropper inside the color popup shows i
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.3.1.rmskin](releases/GoogleCalendar_1.3.1.rmskin) using the download button on the repository file page.
+1. Download [GoogleCalendar_1.4.0.rmskin](releases/GoogleCalendar_1.4.0.rmskin) using the download button on the repository file page.
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-Version 1.3.1 adapts week expansion to event content and cursor position, limiting height to 52–108 pixels instead of a fixed 172 pixels. It includes the button-free hot-corner access introduced in 1.2.0. (1.3.1은 일정 내용과 커서 위치에 맞춰 52~108픽셀로 펼쳐집니다. 1.2.0의 화면 모서리 호출 기능도 포함합니다.)
+Version 1.4.0 sharpens the font and adds in-widget Google event creation and deletion after account authorization. Adaptive week heights and button-free corner access remain available. (1.4.0은 글씨를 또렷하게 바꾸고 계정 연결 후 달력 안에서 개인 일정을 추가·삭제합니다. 적응형 주 높이와 모서리 호출도 포함합니다.)
 
 v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedropper and color-reading fix, plus missing-plugin guidance with an official installation-page link. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
 ## Install from source
+
+Also copy CalendarBridge.ini.example to CalendarBridge.ini for the local request channel. The installer generates this empty file automatically. (소스로 설치할 때는 빈 연동 요청 예시도 복사합니다. 설치 파일에서는 자동 생성합니다.)
 
 1. Copy this project folder to `Documents\Rainmeter\Skins\GoogleCalendar`.
 2. Copy `@Resources\Private.inc.example` to `@Resources\Private.inc`.
@@ -56,7 +58,7 @@ Edit `@Resources/CalendarPeek.ini`, then refresh the skin:
 
 The controller uses built-in Windows PowerShell 5.1 and .NET; AutoHotkey is not required. RunCommand starts it hidden and terminates it when the skin is refreshed, unloaded, or Rainmeter exits. It does not register global hotkeys or change machine-wide execution policy. Organizational policies may prevent it from starting; in that case disable `Enabled` to keep the existing desktop calendar. Its diagnostic appears in the `MeasureCalendarPeek` measure.
 
-Install the same 1.3.1 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
+Install the same 1.4.0 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
 
 ## Configure your calendar
 
@@ -85,6 +87,8 @@ GoogleAccount=you@example.com
 Set `ChromePath` only if Chrome is installed elsewhere. Double-click the calendar background to open Google Calendar using these exact settings. There is intentionally **no default-browser fallback**: incorrect settings or a missing RunCommand plugin result in no new browser window rather than opening a different account.
 
 ## Use the calendar
+
+- Select **＋** or right-click a date to create an event. Connect your account once using the [setup guide](docs/GOOGLE_CONNECTION.ko.md). Select an event to view it and confirm deletion; recurring events delete only the selected occurrence. Holidays and events with guests remain read-only. (＋ 또는 날짜 오른쪽 클릭으로 일정을 추가합니다. 최초 계정 연결 후 사용할 수 있으며 반복 일정은 선택한 회차만 삭제합니다. 공휴일과 참석자가 있는 일정은 읽기 전용입니다.)
 
 - Hover any date for 80 ms to expand its entire horizontal week row. Other weeks show dates only; moving outside restores the normal layout after 140 ms. The height transition lasts 220 ms without changing the 600 x 420 window. (날짜 위에 마우스를 80밀리초 두면 해당 주의 가로줄 전체가 펼쳐지고 다른 주는 날짜만 표시합니다. 밖으로 이동하면 140밀리초 뒤 복귀하며, 220밀리초 동안 높이가 전환됩니다. 창 크기는 유지됩니다.)
 - Expanded days show every event's full title and time in Korea Standard Time, or an all-day label. Scroll inside a date to read additional events. Keyboard users can Tab into the dates and move with arrow keys; reduced-motion preferences disable transitions. (펼친 날짜에서는 모든 일정의 제목과 한국 시간 또는 종일 표시를 볼 수 있습니다. 일정이 많으면 날짜 안에서 스크롤합니다. 탭과 방향키로도 선택할 수 있으며, 움직임 줄이기 설정을 따릅니다.)

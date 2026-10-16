@@ -58,10 +58,10 @@ test('contains a throwing Bang call', () => {
 });
 
 test('excludes button and link targets while accepting the calendar surface', () => {
-  for (const match of ['button', 'a']) {
+  for (const match of ['button', 'a', 'input', 'select', 'textarea', '[role=button]', '[role=dialog]']) {
     const target = {
       closest(selector) {
-        assert.equal(selector, 'button, a');
+        assert.equal(selector, 'button, a, input, select, textarea, [role="button"], [role="dialog"]');
         return { localName: match };
       },
     };

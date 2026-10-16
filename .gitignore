@@ -3,6 +3,9 @@ DownloadFile/*.ics
 @Resources/Private.inc
 @Resources/ChromeProfile.inc
 @Resources/CalendarPeek.state
+@Resources/CalendarBridge.ini
+@Resources/CalendarBridgeResponse.json
+@Resources/CalendarBridgeResponse.json.tmp
 *.bak
 *.log
 output/
