@@ -57,6 +57,8 @@ Version 1.2.0 includes the PowerShell/C# hot-corner controller and its default s
 
 For 1.4.0 include the editor module and native bridge, and generate an empty CalendarBridge.ini only from its tracked example. Never package responses, local requests, OAuth client files or connection tokens. Verify holiday/guest protection, failed calendar changes, and successful writes followed by read failures with isolated fixtures. Real authentication requires a desktop OAuth client and browser consent. (1.4.0은 편집 모듈과 실행기를 포함하고 요청 파일은 예시에서 빈 상태로 생성합니다. 실제 요청·응답과 계정 자료는 배포하지 않습니다. 권한 보호·달력 선택 실패·쓰기 후 조회 실패는 예시로 검사하며, 실제 인증은 사용자 설정과 로그인이 필요합니다.)
 
+1.5.0 adds updates with conditional partial writes. Verify all-day/timed conversions, single recurring instances, moved-event cache removal and retained input on failure. Never change real events solely for release verification. (1.5.0은 동시 변경 방지를 적용한 부분 수정을 추가합니다. 종일 전환·단일 회차·날짜 이동·실패 시 입력 유지와 기존 확장을 검사합니다. 배포 검사만을 위해 실제 일정을 변경하지 않습니다.)
+
 1. Run `pnpm test` again and inspect `git status`.
 2. Commit only public files, then push the release branch after CI succeeds.
 3. Create and push an annotated tag such as `v1.0.0`.

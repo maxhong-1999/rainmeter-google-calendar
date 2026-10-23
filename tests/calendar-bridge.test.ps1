@@ -16,9 +16,10 @@ try {
     Assert (![Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($tempPath)).Contains('example-refresh')) 'Plaintext token was persisted.'
 } finally { if(Test-Path -LiteralPath $tempPath){Remove-Item -LiteralPath $tempPath -Force} }
 $script:calls = @()
+$script:existingEvent = [pscustomobject]@{etag='"current"';eventType='default';description='Keep this';reminders=@{useDefault=$true}}
 function Invoke-GoogleRequest($connection,$method,$path,$body=$null,$etag=$null) {
     $script:calls += @{method=$method;path=$path;body=$body;etag=$etag}
-    if($method -eq 'Get'){return [pscustomobject]@{etag='"current"';eventType='default'}}
+    if($method -eq 'Get'){return $script:existingEvent}
     return @{id='example'}
 }
 $connection=[pscustomobject]@{calendarId='example@example.test'}
@@ -31,4 +32,26 @@ Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='delete';eve
 Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='delete';eventId='../other';etag='"current"';calendarId=$connection.calendarId}) $connection }
 Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='list';start='2026-01-01';end='2027-01-01';calendarId=$connection.calendarId}) $connection }
 Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='create';event=$event;calendarId='other@example.test'}) $connection }
+Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example_20261023';etag='"current"';event=$event;calendarId=$connection.calendarId}) $connection | Out-Null
+Assert ($script:calls[-1].method -eq 'Patch' -and $script:calls[-1].path.StartsWith('/calendars/example%40example.test/events/example_20261023?')) 'Update did not target only the selected occurrence.'
+Assert ($script:calls[-1].etag -eq '"current"') 'Update did not check the ETag.'
+Assert (($script:calls[-1].body.Keys | Sort-Object) -join ',' -eq 'end,start,summary') 'Update included unrelated fields.'
+Assert ($script:calls[-1].body.start.Contains('dateTime') -and $null -eq $script:calls[-1].body.start.dateTime) 'All-day update did not clear old time.'
+$timed=[pscustomobject]@{summary='Timed';start=@{dateTime='2026-10-23T09:00:15+09:00'};end=@{dateTime='2026-10-23T10:00:45+09:00'}}
+Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"current"';event=$timed;calendarId=$connection.calendarId}) $connection | Out-Null
+Assert ($script:calls[-1].body.start.Contains('date') -and $null -eq $script:calls[-1].body.start.date) 'Timed update did not clear old all-day date.'
+$datesOnly=[pscustomobject]@{start=@{date='2026-10-23'};end=@{date='2026-10-24'}}
+Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"current"';event=$datesOnly;calendarId=$connection.calendarId}) $connection | Out-Null
+Assert (!$script:calls[-1].body.Contains('summary')) 'Date-only update changed the title.'
+$clearTitle=[pscustomobject]@{summary='';start=@{date='2026-10-23'};end=@{date='2026-10-24'}}
+Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"current"';event=$clearTitle;calendarId=$connection.calendarId}) $connection | Out-Null
+Assert ($script:calls[-1].body.Contains('summary') -and $script:calls[-1].body.summary -eq '') 'An intentional blank title was not accepted.'
+Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"stale"';event=$event;calendarId=$connection.calendarId}) $connection }
+Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"current"';event=$event;calendarId='other@example.test'}) $connection }
+foreach($protected in @(@{attendees=@(@{self=$false})},@{locked=$true},@{recurrence=@('RRULE:FREQ=DAILY')},@{eventType='birthday'})){
+    $script:existingEvent=[pscustomobject](@{etag='"current"'}+$protected)
+    $before=$script:calls.Count
+    Assert-Invalid { Invoke-CalendarOperation ([pscustomobject]@{action='update';eventId='example';etag='"current"';event=$event;calendarId=$connection.calendarId}) $connection }
+    Assert (@($script:calls | Select-Object -Skip $before | Where-Object {$_.method -eq 'Patch'}).Count -eq 0) 'A protected event was changed.'
+}
 'Calendar bridge validation, encryption and isolated API checks passed.'

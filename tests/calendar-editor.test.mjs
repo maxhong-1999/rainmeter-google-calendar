@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { googleEventsByDay, eventInput, createCalendarBridge } from '../@Resources/calendar-editor.mjs';
+import { googleEventsByDay, eventInput, eventFormValues, eventUpdateInput, createCalendarBridge } from '../@Resources/calendar-editor.mjs';
 
 test('Google events preserve instance IDs, exclusive ends and read-only guests', () => {
   const events = googleEventsByDay([
@@ -25,6 +25,31 @@ test('event input validates dates and emits explicit Seoul offsets', () => {
   assert.throws(()=>eventInput({...base,endTime:'08:00'}));
   assert.throws(()=>eventInput({...base,startDate:'2026-02-30'}));
   assert.throws(()=>eventInput({...base,title:' '}));
+});
+
+test('edit values round-trip complete events and inclusive all-day endings in Seoul', () => {
+  const input={title:'야간 일정',startDate:'2026-10-23',endDate:'2026-10-24',startTime:'23:30:15',endTime:'00:15:45',allDay:false};
+  const timed={title:input.title,allDay:false,startMs:Date.parse('2026-10-23T23:30:15+09:00'),endMs:Date.parse('2026-10-24T00:15:45+09:00')};
+  assert.deepEqual(eventFormValues(timed),input);
+  assert.equal(eventInput(input).start.dateTime,'2026-10-23T23:30:15+09:00');
+  const allDay={title:'휴가',allDay:true,startMs:Date.parse('2026-10-23T00:00:00+09:00'),endMs:Date.parse('2026-10-26T00:00:00+09:00')};
+  const values=eventFormValues(allDay);
+  assert.equal(values.startDate,'2026-10-23');assert.equal(values.endDate,'2026-10-25');
+  assert.equal(eventInput(values).end.date,'2026-10-26');
+  assert.throws(()=>eventInput({...input,startTime:'23:30:99'}));
+});
+
+test('date-only edits preserve absent and blank titles, while intentional title changes are explicit', () => {
+  for(const summary of [undefined,'',' 원래 제목 ','긴'.repeat(201)]){
+    const original=googleEventsByDay([{id:'example',etag:'"v1"',summary,start:{date:'2026-10-23'},end:{date:'2026-10-24'}}]).get('2026-10-23')[0];
+    const values=eventFormValues(original);
+    assert.equal(values.title,summary??'');
+    assert.equal(Object.hasOwn(eventUpdateInput({...values,startDate:'2026-10-24',endDate:'2026-10-24'},original),'summary'),false);
+    assert.equal(eventUpdateInput({...values,title:'직접 수정'},original).summary,'직접 수정');
+  }
+  const named={title:'기존 제목',summary:'기존 제목'};
+  assert.equal(eventUpdateInput({title:'',allDay:true,startDate:'2026-10-23',endDate:'2026-10-23'},named).summary,'');
+  assert.throws(()=>eventUpdateInput({title:'새'.repeat(201),allDay:true,startDate:'2026-10-23',endDate:'2026-10-23'},named));
 });
 
 test('native bridge encodes untrusted text and accepts only the matching response', async () => {

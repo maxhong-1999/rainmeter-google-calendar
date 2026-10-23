@@ -1,7 +1,8 @@
 import { buildMonthMatrix } from './calendar-model.mjs';
-import { formatEventTime } from './calendar-week-focus.mjs?v=1.4.0';
+import { formatEventTime } from './calendar-week-focus.mjs?v=1.5.0';
 
 const dayFormat = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit' });
+const timeFormat = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' });
 const dayMs = 86400000;
 function midnight(day) { return Date.parse(day + 'T00:00:00+09:00'); }
 function nextDay(day, count = 1) { return dayFormat.format(new Date(midnight(day) + count * dayMs)); }
@@ -21,7 +22,7 @@ export function googleEventsByDay(items, range) {
       const key = dayFormat.format(new Date(time));
       const events = result.get(key) || [];
       events.push({
-        id:item.id, etag:item.etag, calendarId:range?.calendarId, title:item.summary || '(제목 없음)', startMs, endMs, allDay, source:'personal',
+        id:item.id, etag:item.etag, calendarId:range?.calendarId, summary:item.summary??'', title:item.summary || '(제목 없음)', startMs, endMs, allDay, source:'personal',
         recurring:Boolean(item.recurringEventId),
         editable:Boolean(item.id && item.etag && !item.locked && (!item.eventType || item.eventType === 'default') && !item.attendees?.length),
       });
@@ -32,15 +33,31 @@ export function googleEventsByDay(items, range) {
   return result;
 }
 
-export function eventInput(values) {
+export function eventFormValues(event) {
+  const time = value => timeFormat.format(new Date(value)).replace(/:00$/,'');
+  return { title:event.summary??event.title, allDay:event.allDay,
+    startDate:dayFormat.format(new Date(event.startMs)), endDate:dayFormat.format(new Date(event.endMs - (event.allDay ? 1 : 0))),
+    startTime:event.allDay ? '09:00' : time(event.startMs), endTime:event.allDay ? '10:00' : time(event.endMs),
+  };
+}
+
+export function eventInput(values, {allowEmptyTitle=false} = {}) {
   const summary = String(values.title || '').trim();
-  if (!summary || summary.length > 200) throw new Error('제목을 1~200자로 입력해 주세요.');
+  if ((!summary && !allowEmptyTitle) || summary.length > 200) throw new Error('제목을 1~200자로 입력해 주세요.');
   if (!validDay(values.startDate) || !validDay(values.endDate) || values.endDate < values.startDate) throw new Error('시작·종료 날짜를 확인해 주세요.');
   if (values.allDay) return { summary, start:{date:values.startDate}, end:{date:nextDay(values.endDate)} };
-  if (![values.startTime,values.endTime].every(value => /^([01]\d|2[0-3]):[0-5]\d$/.test(value))) throw new Error('시작·종료 시간을 확인해 주세요.');
-  const start = values.startDate + 'T' + values.startTime + ':00+09:00', end = values.endDate + 'T' + values.endTime + ':00+09:00';
+  if (![values.startTime,values.endTime].every(value => /^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(value))) throw new Error('시작·종료 시간을 확인해 주세요.');
+  const fullTime = value => value.length === 5 ? value + ':00' : value;
+  const start = values.startDate + 'T' + fullTime(values.startTime) + '+09:00', end = values.endDate + 'T' + fullTime(values.endTime) + '+09:00';
   if (Date.parse(end) <= Date.parse(start)) throw new Error('종료 시간은 시작 시간보다 뒤여야 합니다.');
   return { summary, start:{dateTime:start,timeZone:'Asia/Seoul'}, end:{dateTime:end,timeZone:'Asia/Seoul'} };
+}
+
+export function eventUpdateInput(values, original) {
+  const sameTitle=values.title===(original.summary??original.title);
+  const data=eventInput(sameTitle?{...values,title:''}:values,{allowEmptyTitle:true});
+  if(sameTitle)delete data.summary;
+  return data;
 }
 
 const errors = {
@@ -91,7 +108,7 @@ export function createCalendarEditor({ root=document, host=window, grid, getMont
   const panel = get('calendar-editor'), form = get('editor-form'), view = get('editor-view'), setup = get('editor-setup');
   const status = get('editor-status'), heading = get('editor-heading'), calendarSelect = get('editor-calendar');
   const cards = new WeakMap();
-  let connection = {connected:false}, cache = null, current = null, pendingDate = null, opener = null, openerDay = null, generation = 0, message = '';
+  let connection = {connected:false}, cache = null, current = null, editing = null, pendingDate = null, opener = null, openerDay = null, generation = 0, message = '';
   let queuedMonth = null, reloading = false;
   function busy(value) {
     panel.setAttribute('aria-busy', String(value));
@@ -123,23 +140,38 @@ export function createCalendarEditor({ root=document, host=window, grid, getMont
     (opener?.isConnected?opener:openerDay?.isConnected?openerDay:get('add-event')).focus({preventScroll:true});
   }
   function openCreate(day = dayFormat.format(new Date())) {
-    pendingDate = day; open('일정 추가');
+    editing = null; pendingDate = day; open('일정 추가');
     if (!connection.connected) { setup.hidden = false; get('editor-connect').focus(); return; }
     form.hidden = false;
+    get('editor-title').required = true;
     get('editor-title').value = '';
     get('editor-start-date').value = get('editor-end-date').value = day;
     get('editor-start-time').value = '09:00'; get('editor-end-time').value = '10:00';
+    get('editor-save').textContent = '구글 캘린더에 저장';get('editor-form-note').textContent = '';
     get('editor-all-day').checked = false; busy(false); get('editor-title').focus();
   }
   function openEvent(event, day) {
-    current = event; open('일정 상세'); view.hidden = false;
+    editing = null; current = event; open('일정 상세'); view.hidden = false;
     get('editor-event-title').textContent = event.title;
     get('editor-event-time').textContent = formatEventTime(event,day);
     const editable = connection.connected && event.source === 'personal' && event.editable;
     get('editor-delete').hidden = !editable;
+    get('editor-edit').hidden = !editable;
     get('editor-readonly').textContent = event.source === 'holidays' ? '공휴일은 읽기 전용입니다.' :
-      event.recurring ? '반복 일정입니다. 삭제하면 선택한 회차만 삭제됩니다.' :
-      editable ? '' : '구글 계정을 연결한 뒤 본인 소유의 개인 일정을 삭제할 수 있습니다. 참석자가 있는 일정은 구글 캘린더에서 관리해 주세요.';
+      !editable ? '구글 계정을 연결하면 본인 소유의 개인 일정을 수정·삭제할 수 있습니다. 참석자가 있는 일정은 구글 캘린더에서 관리해 주세요.' :
+      event.recurring ? '반복 일정입니다. 수정·삭제하면 선택한 회차에만 적용됩니다.' : '';
+  }
+  function openEdit() {
+    if (!connection.connected || !current?.editable || current.source !== 'personal') {status.textContent=errors.readonly;return;}
+    if (current.calendarId !== connection.calendarId) {status.textContent=errors.stale;return;}
+    editing = current; open('일정 수정'); form.hidden = false;
+    const values = eventFormValues(editing);
+    get('editor-title').required = false;
+    for (const [key,id] of Object.entries({title:'title',startDate:'start-date',endDate:'end-date',startTime:'start-time',endTime:'end-time'})) get('editor-'+id).value=values[key];
+    get('editor-all-day').checked=values.allDay;
+    get('editor-save').textContent='변경 사항 저장';
+    get('editor-form-note').textContent=editing.recurring?'선택한 회차만 수정합니다. 다른 반복 일정에는 적용되지 않습니다.':'';
+    busy(false);get('editor-title').focus();
   }
   async function reload(year, monthIndex) {
     if (!connection.connected) return;
@@ -170,6 +202,7 @@ export function createCalendarEditor({ root=document, host=window, grid, getMont
   }
   get('add-event').addEventListener('click',()=>openCreate());
   get('editor-close').addEventListener('click',close);
+  get('editor-edit').addEventListener('click',openEdit);
   get('editor-account').addEventListener('click',()=>{open('구글 캘린더 연결');setup.hidden=false;get('editor-connect').focus();});
   get('editor-connect').addEventListener('click',()=>get('editor-client-file').click());
   get('editor-client-file').addEventListener('change',event=>run(async()=>{
@@ -202,12 +235,17 @@ export function createCalendarEditor({ root=document, host=window, grid, getMont
   form.addEventListener('submit',event=>{
     event.preventDefault();
     run(async()=>{
-      const data=eventInput({
+      const target=editing;
+      const values={
         title:get('editor-title').value,startDate:get('editor-start-date').value,endDate:get('editor-end-date').value,
         startTime:get('editor-start-time').value,endTime:get('editor-end-time').value,allDay:get('editor-all-day').checked,
+      };
+      const data=target?eventUpdateInput(values,target):eventInput(values);
+      const saved=await bridge.call(target?'update':'create',{
+        event:data,calendarId:target?.calendarId||connection.calendarId,...(target?{eventId:target.id,etag:target.etag}:{}),
       });
-      const saved=await bridge.call('create',{event:data,calendarId:connection.calendarId});
       if(cache&&cache.range.calendarId===connection.calendarId){
+        if(target){for(const [day,events] of cache.map)cache.map.set(day,events.filter(e=>e.id!==target.id));}
         for(const [day,events] of googleEventsByDay([saved],cache.range))cache.map.set(day,[...(cache.map.get(day)||[]).filter(e=>e.id!==saved.id),...events]);
         onChange();
       }
@@ -248,7 +286,7 @@ export function createCalendarEditor({ root=document, host=window, grid, getMont
     reload,
     async initialize(){
       try { connection=await bridge.call('status');connectionUI();if(connection.connected){const m=getMonth();await reload(m.year,m.monthIndex);} }
-      catch { get('editor-connection-status').textContent='구글 계정을 연결하면 이곳에서 추가·삭제할 수 있습니다.'; }
+      catch { get('editor-connection-status').textContent='구글 계정을 연결하면 이곳에서 추가·수정·삭제할 수 있습니다.'; }
     },
   };
 }

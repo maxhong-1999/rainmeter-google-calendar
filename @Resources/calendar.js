@@ -11,8 +11,8 @@ import {
 import { openGoogleCalendar, shouldOpenGoogleCalendar } from './calendar-host.mjs';
 import { createThemeSettingsController } from './calendar-theme-ui.mjs';
 import { createColorPicker } from './calendar-color-picker.mjs';
-import { createWeekFocusController, formatEventTime } from './calendar-week-focus.mjs?v=1.4.0';
-import { createCalendarEditor } from './calendar-editor.mjs?v=1.4.0';
+import { createWeekFocusController, formatEventTime } from './calendar-week-focus.mjs?v=1.5.0';
+import { createCalendarEditor } from './calendar-editor.mjs?v=1.5.0';
 
 const CALENDAR_FEEDS = [
   { source: 'personal', path: '../DownloadFile/personal.ics' },

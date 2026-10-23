@@ -38,9 +38,9 @@ function ConvertTo-Day([string]$value) {
     if (![datetime]::TryParseExact($value,'yyyy-MM-dd',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::None,[ref]$date)) { throw 'invalid' }
     return $date
 }
-function ConvertTo-EventBody($event) {
+function ConvertTo-EventBody($event,[switch]$AllowEmptyTitle) {
     $title = [string]$event.summary
-    if ([string]::IsNullOrWhiteSpace($title) -or $title.Length -gt 200) { throw 'invalid' }
+    if ((!$AllowEmptyTitle -and [string]::IsNullOrWhiteSpace($title)) -or $title.Length -gt 200) { throw 'invalid' }
     if ($event.start.date -and $event.end.date) {
         $start = ConvertTo-Day $event.start.date; $end = ConvertTo-Day $event.end.date
         if ($end -le $start -or ($end-$start).TotalDays -gt 366) { throw 'invalid' }
@@ -169,14 +169,24 @@ function Invoke-CalendarOperation($request,$connection) {
             $body=ConvertTo-EventBody $request.event
             return Invoke-GoogleRequest $connection Post ($base+'?sendUpdates=none') $body
         }
-        'delete' {
+        { $_ -in @('delete','update') } {
             if ([string]$request.eventId -notmatch '^[A-Za-z0-9_-]{1,1024}$' -or [string]$request.etag -notmatch '^"[^"\\\r\n]{1,200}"$') { throw 'invalid' }
             $path=$base+'/'+[uri]::EscapeDataString([string]$request.eventId)
             $event=Invoke-GoogleRequest $connection Get ($path+'?fields=etag,attendees(self),locked,eventType,recurrence')
             if ($event.etag -cne $request.etag) { throw 'stale' }
             if ($event.locked -or $event.recurrence -or $event.attendees -or ($event.eventType -and $event.eventType -ne 'default')) { throw 'readonly' }
-            Invoke-GoogleRequest $connection Delete ($path+'?sendUpdates=none') $null $request.etag | Out-Null
-            return @{deleted=$true}
+            if ($request.action -eq 'delete') {
+                Invoke-GoogleRequest $connection Delete ($path+'?sendUpdates=none') $null $request.etag | Out-Null
+                return @{deleted=$true}
+            }
+            $body=ConvertTo-EventBody $request.event -AllowEmptyTitle
+            if ($null -eq $request.event.PSObject.Properties['summary']) { $body.Remove('summary') }
+            if ($body.start.date) {
+                $body.start.dateTime=$null;$body.start.timeZone=$null
+                $body.end.dateTime=$null;$body.end.timeZone=$null
+            } else { $body.start.date=$null;$body.end.date=$null }
+            $fields='id,etag,summary,status,start,end,recurringEventId,eventType,locked,attendees(self)'
+            return Invoke-GoogleRequest $connection Patch ($path+'?sendUpdates=none&fields='+[uri]::EscapeDataString($fields)) $body $request.etag
         }
         default { throw 'invalid' }
     }
@@ -196,7 +206,7 @@ function Invoke-BridgeMain([string]$root) {
         $request=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($encoded)) | ConvertFrom-Json
         $requestId=[string]$request.requestId
         if($requestId -notmatch '^[a-f0-9-]{36}$' -or [Math]::Abs([datetimeoffset]::UtcNow.ToUnixTimeMilliseconds()-[double]$request.issuedAt) -gt 120000){throw 'invalid'}
-        if($request.action -notin @('status','connect','disconnect','select','list','create','delete')){throw 'invalid'}
+        if($request.action -notin @('status','connect','disconnect','select','list','create','update','delete')){throw 'invalid'}
         $hash=[Security.Cryptography.SHA256]::Create()
         try{$key=([BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes($root.TrimEnd('\').ToLowerInvariant())))).Replace('-','')}finally{$hash.Dispose()}
         $script:ConnectionPath=Join-Path $env:LOCALAPPDATA ('RainmeterGoogleCalendar\'+$key+'.bin')

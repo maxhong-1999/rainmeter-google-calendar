@@ -18,14 +18,14 @@ If YourPicker is missing, clicking the eyedropper inside the color popup shows i
 
 ## Install from a release
 
-1. Download [GoogleCalendar_1.4.0.rmskin](releases/GoogleCalendar_1.4.0.rmskin) using the download button on the repository file page.
+1. Download [GoogleCalendar_1.5.0.rmskin](releases/GoogleCalendar_1.5.0.rmskin) using the download button on the repository file page.
 2. Double-click the downloaded file, confirm the Rainmeter installer, and select **Install**.
 3. Open `Documents\Rainmeter\Skins\GoogleCalendar\@Resources`.
 4. Edit `Private.inc` and `ChromeProfile.inc` as described below, then refresh `GoogleCalendar` in Rainmeter.
 
 The installer contains placeholder configuration only. It never contains another user's calendar, email address, or Chrome profile.
 
-Version 1.4.0 sharpens the font and adds in-widget Google event creation and deletion after account authorization. Adaptive week heights and button-free corner access remain available. (1.4.0은 글씨를 또렷하게 바꾸고 계정 연결 후 달력 안에서 개인 일정을 추가·삭제합니다. 적응형 주 높이와 모서리 호출도 포함합니다.)
+Version 1.5.0 adds editing to the existing Google event creation and deletion. Open an event and choose 일정 수정 to change its title, dates, times or all-day status. Recurring edits apply to the selected occurrence only. Account authorization is required; clear fonts, adaptive weeks and corner access remain available. (1.5.0은 기존 추가·삭제와 함께 일정 카드의 수정 버튼으로 제목·날짜·시간·종일 여부를 바꿉니다. 반복 일정은 선택한 회차만 수정합니다. 최초 계정 연결이 필요하며 또렷한 글꼴·적응형 주 확장·모서리 호출을 유지합니다.)
 
 v1.1.1 includes the updated today outline, HEX/RGB editing, the screen eyedropper and color-reading fix, plus missing-plugin guidance with an official installation-page link. Screen sampling requires the separately installed YourPicker plugin; it is not bundled. Upgrades preserve the existing calendar/account configuration through `VariableFiles`.
 
@@ -58,7 +58,7 @@ Edit `@Resources/CalendarPeek.ini`, then refresh the skin:
 
 The controller uses built-in Windows PowerShell 5.1 and .NET; AutoHotkey is not required. RunCommand starts it hidden and terminates it when the skin is refreshed, unloaded, or Rainmeter exits. It does not register global hotkeys or change machine-wide execution policy. Organizational policies may prevent it from starting; in that case disable `Enabled` to keep the existing desktop calendar. Its diagnostic appears in the `MeasureCalendarPeek` measure.
 
-Install the same 1.4.0 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
+Install the same 1.5.0 `.rmskin` on other devices. Upgrades preserve personal calendar/account configuration and `CalendarPeek.ini`; keep the installer's skin backup option enabled at its default. New devices still require their own calendar setup and WebView2 plugin. `CalendarPeek.state` is a local recovery file for the desktop position and is never distributed.
 
 ## Configure your calendar
 

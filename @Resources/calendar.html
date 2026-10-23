@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>로컬 캘린더</title>
-    <link rel="stylesheet" href="./calendar.css?v=1.4.0">
+    <link rel="stylesheet" href="./calendar.css?v=1.5.0">
     <script type="importmap">
       {
         "imports": {
@@ -12,7 +12,7 @@
         }
       }
     </script>
-    <script type="module" src="./calendar.js?v=1.4.0"></script>
+    <script type="module" src="./calendar.js?v=1.5.0"></script>
   </head>
   <body>
     <main class="calendar-shell" aria-label="월간 일정">
@@ -49,20 +49,22 @@
             <button id="editor-disconnect" type="button" hidden>이 기기 연결 해제</button>
           </div>
           <form id="editor-form" hidden>
-            <label>제목<input id="editor-title" type="text" maxlength="200" required autocomplete="off"></label>
+            <label>제목<input id="editor-title" type="text" maxlength="200" required autocomplete="off" placeholder="(제목 없음)"></label>
             <label class="editor-check"><input id="editor-all-day" type="checkbox">종일</label>
             <div class="editor-dates">
               <label>시작 날짜<input id="editor-start-date" type="date" required></label>
-              <label>시작 시간<input id="editor-start-time" type="time" required></label>
+              <label>시작 시간<input id="editor-start-time" type="time" step="1" required></label>
               <label>종료 날짜<input id="editor-end-date" type="date" required></label>
-              <label>종료 시간<input id="editor-end-time" type="time" required></label>
+              <label>종료 시간<input id="editor-end-time" type="time" step="1" required></label>
             </div>
             <p class="editor-note">한국 시간 기준입니다. 종일 일정의 종료 날짜는 마지막 날입니다.</p>
+            <p id="editor-form-note" class="editor-note"></p>
             <button id="editor-save" type="submit">구글 캘린더에 저장</button>
           </form>
           <div id="editor-view" hidden>
             <h3 id="editor-event-title"></h3><p id="editor-event-time"></p>
             <p id="editor-readonly" class="editor-note"></p>
+            <button id="editor-edit" type="button">일정 수정</button>
             <button id="editor-delete" type="button">일정 삭제</button>
             <div id="editor-confirm" hidden>
               <p>이 일정을 구글 캘린더에서 삭제할까요? 반복 일정은 선택한 회차만 삭제합니다.</p>
