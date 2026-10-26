@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>로컬 캘린더</title>
-    <link rel="stylesheet" href="./calendar.css?v=1.5.0">
+    <link rel="stylesheet" href="./calendar.css?v=1.5.1">
     <script type="importmap">
       {
         "imports": {
@@ -12,7 +12,7 @@
         }
       }
     </script>
-    <script type="module" src="./calendar.js?v=1.5.0"></script>
+    <script type="module" src="./calendar.js?v=1.5.1"></script>
   </head>
   <body>
     <main class="calendar-shell" aria-label="월간 일정">
@@ -22,7 +22,9 @@
         <div class="month-heading">
           <h1 id="month-label"></h1>
           <p id="sync-state" role="status" aria-live="polite"></p>
-          <button id="add-event" class="add-event" type="button" aria-label="일정 추가" title="일정 추가">＋</button>
+          <button id="add-event" class="add-event" type="button" aria-label="일정 추가" title="일정 추가">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2v12M2 8h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
         </div>
         <button class="settings-button" id="theme-settings-button" type="button"
           aria-label="색상 설정" aria-expanded="false" aria-controls="theme-settings-panel">

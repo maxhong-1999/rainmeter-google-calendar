@@ -44,7 +44,8 @@ body {
 }
 
 .month-heading { position: relative; min-width: 0; padding: 0 30px; text-align: center; }
-.add-event { position:absolute; right:0; top:0; width:28px; height:28px; padding:0; border:1px solid var(--panel-border); border-radius:50%; background:var(--event); color:var(--text); font:700 20px "Malgun Gothic",sans-serif; cursor:pointer; }
+.add-event { position:absolute; right:0; top:0; display:grid; place-items:center; width:28px; height:28px; padding:0; border:1px solid var(--panel-border); border-radius:50%; background:var(--event); color:var(--text); cursor:pointer; }
+.add-event svg { display:block; width:14px; height:14px; }
 
 #previous-month { grid-column: 1; }
 #today-button { grid-column: 2; }

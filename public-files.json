@@ -56,6 +56,7 @@
   "releases/GoogleCalendar_1.3.1.rmskin",
   "releases/GoogleCalendar_1.4.0.rmskin",
   "releases/GoogleCalendar_1.5.0.rmskin",
+  "releases/GoogleCalendar_1.5.1.rmskin",
   "scripts/prepare-release.ps1",
   "scripts/prepare-rmskin.mjs",
   "tests/calendar-events.test.mjs",

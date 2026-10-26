@@ -1,5 +1,5 @@
 import { buildMonthMatrix } from './calendar-model.mjs';
-import { formatEventTime } from './calendar-week-focus.mjs?v=1.5.0';
+import { formatEventTime } from './calendar-week-focus.mjs?v=1.5.1';
 
 const dayFormat = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit' });
 const timeFormat = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' });
