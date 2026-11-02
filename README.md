@@ -2,6 +2,8 @@
 
 [한국어 안내](README.ko.md)
 
+The [project homepage](https://maxhong-1999.github.io/rainmeter-google-calendar/) explains the app, privacy practices and use conditions. (프로그램 홈페이지에서 소개와 개인정보처리방침, 이용 안내를 확인할 수 있습니다.)
+
 A 600 x 420 Rainmeter calendar skin that displays a private Google Calendar iCal feed and Korea's public holidays. It provides previous/next month controls, a Today button, persistent glass-theme settings, ten-minute refreshes aligned to the hour, and an optional double-click shortcut that opens Google Calendar in a selected Chrome profile.
 
 ## Requirements

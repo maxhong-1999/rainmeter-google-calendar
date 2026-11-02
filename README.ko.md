@@ -2,6 +2,8 @@
 
 [English guide](README.md)
 
+[프로그램 홈페이지](https://maxhong-1999.github.io/rainmeter-google-calendar/)에서 소개와 개인정보처리방침, 이용 안내를 확인할 수 있습니다.
+
 개인 Google Calendar iCal 피드와 대한민국 공휴일을 표시하는 600 x 420 Rainmeter 달력 스킨입니다. 이전·다음 달 이동, 오늘 버튼, 유리 느낌의 색상·투명도 설정, 정각을 포함한 10분 단위 새로고침, 지정한 Chrome 프로필로 Google Calendar를 여는 더블클릭 기능을 제공합니다.
 
 ## 준비물

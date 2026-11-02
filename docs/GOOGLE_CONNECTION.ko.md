@@ -21,6 +21,22 @@
 
 공식 절차: [데스크톱 앱 자격 증명 만들기](https://developers.google.com/workspace/calendar/api/quickstart/python#authorize_credentials_for_a_desktop_application), [사용하는 권한의 의미](https://developers.google.com/workspace/calendar/api/auth), [데스크톱 앱 계정 연결](https://developers.google.com/identity/protocols/oauth2/native-app).
 
+## 일주일마다 다시 연결되는 경우
+
+외부 앱의 게시 상태가 **Testing(테스트 중)**이면 구글의 승인과 갱신 토큰이 승인 후 7일에 만료됩니다. 계정 연결 파일이 남아 있어도 자동 갱신이 거절될 수 있습니다. 최신 설치 파일을 다시 설치해도 구글 쪽의 만료 제한은 바뀌지 않습니다.
+
+장기간 사용하는 개인 앱은 본인 프로젝트의 기본 정보와 홈페이지, 개인정보처리방침, 이용 안내를 준비하고, 필요한 홈페이지 소유 확인을 마친 다음 게시 상태를 운영 상태로 전환합니다. 구글 화면에서 전환이 실제로 완료됐는지 확인한 뒤 달력에서 계정을 다시 연결합니다. 운영 전환 이후에도 사용자가 접근을 취소하거나 구글 보안 정책에 따라 승인이 만료되면 재연결이 필요할 수 있습니다.
+
+이 프로젝트의 공개 안내 주소는 아래와 같습니다. 본인의 구글 프로젝트에 다른 개발자의 주소를 등록하지 말고, 본인이 관리하는 앱과 홈페이지에 맞는 주소를 사용하세요.
+
+- [프로그램 홈페이지](https://maxhong-1999.github.io/rainmeter-google-calendar/)
+- [개인정보처리방침](https://maxhong-1999.github.io/rainmeter-google-calendar/privacy.html)
+- [이용 안내](https://maxhong-1999.github.io/rainmeter-google-calendar/terms.html)
+
+다른 컴퓨터에서 사용할 때도 각 기기에서 구글 승인을 받아 연결합니다. 암호화된 연결 파일을 복사하거나 저장소와 설치 파일에 포함하지 마세요. 연결을 준비한 도구와 레인미터의 실행 환경이 다르면 같은 경로가 다른 저장공간으로 연결될 수도 있으므로, 연결 확인은 실제 레인미터에서 일정 조회가 성공하는지까지 확인합니다.
+
+공식 안내: [앱의 대상과 게시 상태](https://support.google.com/cloud/answer/15549945), [홈페이지와 개인정보처리방침 등록 조건](https://support.google.com/cloud/answer/15549049).
+
 ## 사용
 
 - 제목 옆 **＋** 또는 날짜의 **마우스 오른쪽 버튼**으로 일정 추가창을 엽니다.
